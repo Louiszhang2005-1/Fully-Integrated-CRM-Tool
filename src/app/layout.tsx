@@ -1,0 +1,31 @@
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import { DataProvider } from "@/lib/data-context";
+import AppShell from "@/components/layout/AppShell";
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+});
+
+export const metadata: Metadata = {
+  title: "La Centrale Agricole — CRM Outreach",
+  description: "Outil d'outreach automatisé pour La Centrale Agricole, la plus grande coopérative d'agriculture urbaine au monde.",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="fr" className={`${inter.variable} h-full antialiased`}>
+      <body className="min-h-full">
+        <DataProvider>
+          <AppShell>{children}</AppShell>
+        </DataProvider>
+      </body>
+    </html>
+  );
+}
