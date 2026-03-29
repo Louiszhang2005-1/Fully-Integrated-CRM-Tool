@@ -24,6 +24,7 @@ export interface Campaign {
   bookingLink?: string;
   geography?: string;
   autoDiscover?: boolean;
+  keywords?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -65,7 +66,53 @@ export interface Settings {
   defaultBookingLink: string;
   demoMode: boolean;
   demoEmail: string;
+  bookingSheetId: string;
+  bookingFormTab: string;
 }
+
+export type BookingStatus = 'pending' | 'accepted' | 'refused';
+export type VisitType = 'alimentaire' | 'agriculture_urbaine' | 'economie_circulaire' | 'culinaire';
+export type GroupType = 'corporatif' | 'scolaire' | 'institution';
+export type CulinaryFormula = 'none' | 'decouverte' | 'degustation' | 'boite_lunch' | 'buffet' | 'cocktail';
+
+export interface BookingRequest {
+  id: string;
+  rowIndex: number;
+  timestamp: string;
+  fullName: string;
+  email: string;
+  phone?: string;
+  organization: string;
+  groupType: GroupType;
+  visitType: VisitType;
+  preferredDate: string;
+  nbPeople: number;
+  culinaryFormula: CulinaryFormula;
+  notes?: string;
+  adminResponse?: string;
+}
+
+export const VISIT_TYPE_LABELS: Record<VisitType, string> = {
+  alimentaire: 'Système alimentaire',
+  agriculture_urbaine: 'Agriculture urbaine',
+  economie_circulaire: 'Économie circulaire',
+  culinaire: 'Expérience culinaire',
+};
+
+export const GROUP_TYPE_LABELS: Record<GroupType, string> = {
+  corporatif: 'Corporatif',
+  scolaire: 'Scolaire / OBNL',
+  institution: 'Institution / Média',
+};
+
+export const CULINARY_FORMULA_LABELS: Record<CulinaryFormula, string> = {
+  none: 'Aucune',
+  decouverte: 'Découverte (12$/pers)',
+  degustation: 'Dégustation (10$/pers)',
+  boite_lunch: 'Boîte à lunch (21$/pers)',
+  buffet: 'Buffet froid (30$/pers)',
+  cocktail: 'Cocktail dinatoire (47,50$/pers)',
+};
 
 export const AUDIENCE_LABELS: Record<AudienceType, string> = {
   corporatif: 'Corporatif',

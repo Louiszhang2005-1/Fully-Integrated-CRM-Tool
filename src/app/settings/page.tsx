@@ -376,6 +376,45 @@ export default function SettingsPage() {
           </div>
         </div>
 
+        {/* Bookings (Google Form) */}
+        <div className="card-elevated p-6">
+          <h2 className="text-base font-semibold text-slate-800 mb-4 flex items-center gap-2">
+            <span className="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style={{ background: 'rgba(45,106,46,0.1)' }}>
+              📅
+            </span>
+            Réservations (Google Form)
+          </h2>
+          <p className="text-xs text-slate-500 mb-4">
+            Connectez le Google Sheet lié à votre formulaire de réservation pour gérer les demandes directement dans l&apos;app.
+          </p>
+          <div className="space-y-4">
+            <div>
+              <label className="label">ID du Google Sheet (formulaire de réservation)</label>
+              <input
+                className="input"
+                placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms"
+                value={formState.bookingSheetId}
+                onChange={(e) => handleChange('bookingSheetId', e.target.value)}
+              />
+              <p className="text-xs text-slate-400 mt-1">
+                Visible dans l&apos;URL de votre Google Sheet : docs.google.com/spreadsheets/d/<strong>[ID]</strong>/edit
+              </p>
+            </div>
+            <div>
+              <label className="label">Nom de l&apos;onglet (réponses du formulaire)</label>
+              <input
+                className="input"
+                placeholder="Réponses au formulaire 1"
+                value={formState.bookingFormTab}
+                onChange={(e) => handleChange('bookingFormTab', e.target.value)}
+              />
+              <p className="text-xs text-slate-400 mt-1">
+                Par défaut Google Forms nomme cet onglet &ldquo;Réponses au formulaire 1&rdquo;
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Save button */}
         <div className="flex justify-end pb-8">
           <button type="submit" className="btn btn-primary btn-lg">

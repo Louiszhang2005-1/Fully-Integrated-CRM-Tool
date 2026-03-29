@@ -515,17 +515,28 @@ export default function ContactsPage() {
                     </span>
                   </td>
                   <td>
-                    <select
-                      className="text-xs border border-slate-200 rounded px-2 py-1 bg-white"
-                      value={contact.status}
-                      onChange={(e) =>
-                        updateContact(contact.id, { status: e.target.value as ContactStatus })
-                      }
-                    >
-                      {Object.entries(STATUS_LABELS).map(([key, label]) => (
-                        <option key={key} value={key}>{label}</option>
-                      ))}
-                    </select>
+                    <div className="flex items-center gap-1.5">
+                      <select
+                        className="text-xs border border-slate-200 rounded px-2 py-1 bg-white"
+                        value={contact.status}
+                        onChange={(e) =>
+                          updateContact(contact.id, { status: e.target.value as ContactStatus })
+                        }
+                      >
+                        {Object.entries(STATUS_LABELS).map(([key, label]) => (
+                          <option key={key} value={key}>{label}</option>
+                        ))}
+                      </select>
+                      {contact.status === 'envoye' && (
+                        <button
+                          className="text-xs px-2 py-1 rounded bg-blue-50 text-blue-600 border border-blue-200 hover:bg-blue-100 whitespace-nowrap"
+                          title="Marquer comme ayant répondu"
+                          onClick={() => updateContact(contact.id, { status: 'en_discussion' })}
+                        >
+                          Répondu →
+                        </button>
+                      )}
+                    </div>
                   </td>
                   <td>
                     <input

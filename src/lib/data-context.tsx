@@ -148,10 +148,18 @@ function initSettings(): Settings {
       defaultBookingLink: 'https://centrale.coop/les-visites/',
       demoMode: false,
       demoEmail: 'nora@centrale.coop',
+      bookingSheetId: '',
+      bookingFormTab: 'Form Responses',
     };
   }
   const stored = localStorage.getItem('crm_settings');
-  if (stored) return JSON.parse(stored);
+  if (stored) {
+    const parsed = JSON.parse(stored);
+    // Backfill new fields for existing stored settings
+    if (parsed.bookingSheetId === undefined) parsed.bookingSheetId = '';
+    if (parsed.bookingFormTab === undefined) parsed.bookingFormTab = 'Form Responses 1';
+    return parsed;
+  }
 
   const defaults: Settings = {
     apolloKey: '',
@@ -166,6 +174,10 @@ function initSettings(): Settings {
     signature: 'Responsable communications et événements\nLa Centrale Agricole | nora@centrale.coop | centrale.coop',
     defaultPdfUrl: '',
     defaultBookingLink: 'https://centrale.coop/les-visites/',
+    demoMode: false,
+    demoEmail: 'nora@centrale.coop',
+    bookingSheetId: '',
+    bookingFormTab: 'Form Responses',
   };
   localStorage.setItem('crm_settings', JSON.stringify(defaults));
   return defaults;
@@ -411,6 +423,10 @@ export function DataProvider({ children }: { children: ReactNode }) {
                 contactOrg: contact.organization,
                 audienceType: campaign.audienceType,
                 template: campaign.aiPrompt || template.body,
+                keywords: campaign.keywords,
+                pdfUrl: campaign.pdfUrl || settings.defaultPdfUrl,
+                websiteUrl: 'https://centrale.coop/les-visites/',
+                bookingLink: campaign.bookingLink || settings.defaultBookingLink,
               }),
             });
             if (genRes.ok) {

@@ -18,6 +18,7 @@ export default function NewCampaignPage() {
   const [geography, setGeography] = useState('Montréal');
   const [pdfUrl, setPdfUrl] = useState('');
   const [autoDiscover, setAutoDiscover] = useState(false);
+  const [keywords, setKeywords] = useState('');
 
   const handleAudienceChange = (type: AudienceType) => {
     setAudienceType(type);
@@ -37,6 +38,7 @@ export default function NewCampaignPage() {
       geography: geography || undefined,
       pdfUrl: pdfUrl || undefined,
       autoDiscover,
+      keywords: keywords.trim() || undefined,
     });
 
     router.push(`/campaigns/${campaign.id}`);
@@ -236,6 +238,23 @@ export default function NewCampaignPage() {
               />
               <p className="text-xs text-slate-400 mt-1">
                 Le PDF sera joint aux courriels uniquement (pas aux messages LinkedIn)
+              </p>
+            </div>
+
+            <div>
+              <label htmlFor="keywords" className="label">
+                Mots-clés additionnels
+              </label>
+              <textarea
+                id="keywords"
+                className="textarea"
+                rows={2}
+                placeholder="ex: champignons, kombucha, toits verts, brasserie artisanale..."
+                value={keywords}
+                onChange={(e) => setKeywords(e.target.value)}
+              />
+              <p className="text-xs text-slate-400 mt-1">
+                L&apos;IA intégrera ces mots-clés naturellement dans les messages personnalisés
               </p>
             </div>
           </div>
