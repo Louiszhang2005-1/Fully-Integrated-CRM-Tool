@@ -205,7 +205,9 @@ export default function AppShell({ children }: { children: ReactNode }) {
           <span className="ml-2 font-bold text-lg">La Centrale CRM</span>
         </div>
 
-        {children}
+        <div className="max-w-7xl mx-auto">
+          {children}
+        </div>
       </div>
 
       {/* Toast notifications */}

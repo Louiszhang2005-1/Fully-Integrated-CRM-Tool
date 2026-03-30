@@ -1,8 +1,66 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useData } from '@/lib/data-context';
 import { AudienceType, AUDIENCE_LABELS } from '@/lib/types';
+
+// ─── CSV parser ───────────────────────────────────────────────────────────────
+
+function parseCSV(text: string): Record<string, string>[] {
+  const lines = text.trim().split(/\r?\n/);
+  if (lines.length < 2) return [];
+  const headers = lines[0].split(',').map((h) => h.replace(/^"|"$/g, '').trim().toLowerCase());
+  return lines.slice(1).map((line) => {
+    const values: string[] = [];
+    let cur = '';
+    let inQuote = false;
+    for (const ch of line) {
+      if (ch === '"') { inQuote = !inQuote; }
+      else if (ch === ',' && !inQuote) { values.push(cur); cur = ''; }
+      else { cur += ch; }
+    }
+    values.push(cur);
+    const row: Record<string, string> = {};
+    headers.forEach((h, i) => { row[h] = (values[i] || '').replace(/^"|"$/g, '').trim(); });
+    return row;
+  }).filter((r) => Object.values(r).some((v) => v));
+}
+
+function pick(row: Record<string, string>, ...keys: string[]): string {
+  for (const k of keys) {
+    const val = row[k.toLowerCase()];
+    if (val) return val;
+  }
+  return '';
+}
+
+function rowToContact(row: Record<string, string>): DiscoveredContact | null {
+  const firstName = pick(row, 'prénom', 'prenom', 'firstname', 'first name', 'first_name');
+  const lastName = pick(row, 'nom', 'lastname', 'last name', 'last_name', 'nom de famille');
+  const fullName = pick(row, 'nom complet', 'full name', 'fullname', 'name') || `${firstName} ${lastName}`.trim();
+  if (!fullName) return null;
+  return {
+    name: fullName,
+    firstName,
+    lastName,
+    title: pick(row, 'titre', 'title', 'poste', 'position', 'job title'),
+    organization: pick(row, 'organisation', 'organization', 'company', 'entreprise', 'compagnie'),
+    city: pick(row, 'ville', 'city', 'location'),
+    linkedinUrl: pick(row, 'linkedin', 'linkedin url', 'linkedin_url', 'linkedinurl'),
+    email: pick(row, 'email', 'courriel', 'e-mail') || null,
+    photoUrl: null,
+  };
+}
+
+const CSV_TEMPLATE_HEADERS = 'Prénom,Nom,Titre,Organisation,Email,LinkedIn,Ville';
+
+function downloadTemplate() {
+  const blob = new Blob([CSV_TEMPLATE_HEADERS + '\nMarie,Tremblay,Directrice générale,Mon Org,marie@exemple.com,https://linkedin.com/in/marie,Montréal'], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'modele_contacts.csv'; a.click();
+  URL.revokeObjectURL(url);
+}
 
 interface DiscoveredContact {
   name: string;
@@ -35,7 +93,11 @@ export default function DiscoverPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [searched, setSearched] = useState(false);
   const [planLimit, setPlanLimit] = useState(false);
+  const [isDemo, setIsDemo] = useState(false);
   const [selected, setSelected] = useState<Set<number>>(new Set());
+  const [csvMode, setCsvMode] = useState(false);
+  const [csvDragOver, setCsvDragOver] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const existingLinkedins = new Set(contacts.map((c) => c.linkedinUrl).filter(Boolean));
 
@@ -69,6 +131,7 @@ export default function DiscoverPage() {
       setTotalCount(data.totalCount || 0);
       setCurrentPage(data.page || page);
       setTotalPages(data.totalPages || 1);
+      setIsDemo(data.isDemo === true);
     } catch {
       addToast('Erreur de connexion à Apollo', 'error');
     }
@@ -119,6 +182,33 @@ export default function DiscoverPage() {
     if (added > 0) addToast(`${added} contact${added > 1 ? 's' : ''} ajouté${added > 1 ? 's' : ''} !`, 'success');
     if (skipped > 0) addToast(`${skipped} contact${skipped > 1 ? 's' : ''} déjà présent${skipped > 1 ? 's' : ''} — ignoré${skipped > 1 ? 's' : ''}`, 'info');
     setSelected(new Set());
+  };
+
+  const handleCSVFile = (file: File) => {
+    if (!file.name.endsWith('.csv')) {
+      addToast('Fichier invalide — veuillez choisir un fichier .csv', 'error');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const text = e.target?.result as string;
+      const rows = parseCSV(text);
+      const parsed = rows.map(rowToContact).filter((c): c is DiscoveredContact => c !== null);
+      if (parsed.length === 0) {
+        addToast('Aucun contact trouvé dans le fichier. Vérifiez les colonnes.', 'error');
+        return;
+      }
+      setResults(parsed);
+      setTotalCount(parsed.length);
+      setCurrentPage(1);
+      setTotalPages(1);
+      setSearched(true);
+      setPlanLimit(false);
+      setIsDemo(false);
+      setSelected(new Set(parsed.map((_, i) => i)));
+      addToast(`${parsed.length} contact${parsed.length > 1 ? 's' : ''} importé${parsed.length > 1 ? 's' : ''} depuis le CSV`, 'success');
+    };
+    reader.readAsText(file, 'utf-8');
   };
 
   return (
@@ -197,6 +287,48 @@ export default function DiscoverPage() {
         </button>
       </div>
 
+      {/* CSV Import card */}
+      <div className="card-elevated p-5 mb-6">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <span className="text-lg">📂</span>
+            <h2 className="text-sm font-semibold text-slate-800">Importer depuis un fichier CSV</h2>
+          </div>
+          <button
+            className="text-xs text-primary hover:underline font-medium"
+            onClick={downloadTemplate}
+          >
+            ↓ Télécharger le modèle
+          </button>
+        </div>
+        <p className="text-xs text-slate-400 mb-3">
+          Colonnes reconnues : <span className="font-medium text-slate-600">Prénom, Nom, Titre, Organisation, Email, LinkedIn, Ville</span>. Compatible avec les exports LinkedIn.
+        </p>
+        <div
+          className={`border-2 border-dashed rounded-xl p-6 text-center transition-colors cursor-pointer ${
+            csvDragOver ? 'border-primary bg-green-50' : 'border-slate-200 hover:border-primary/50'
+          }`}
+          onClick={() => fileInputRef.current?.click()}
+          onDragOver={(e) => { e.preventDefault(); setCsvDragOver(true); }}
+          onDragLeave={() => setCsvDragOver(false)}
+          onDrop={(e) => {
+            e.preventDefault();
+            setCsvDragOver(false);
+            const file = e.dataTransfer.files[0];
+            if (file) handleCSVFile(file);
+          }}
+        >
+          <p className="text-sm text-slate-500">Glissez un fichier <strong>.csv</strong> ici ou <span className="text-primary font-medium">parcourir</span></p>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".csv"
+            className="hidden"
+            onChange={(e) => { const f = e.target.files?.[0]; if (f) handleCSVFile(f); e.target.value = ''; }}
+          />
+        </div>
+      </div>
+
       {/* Plan limit warning */}
       {planLimit && (
         <div className="card-elevated p-6 mb-6 border border-amber-200 bg-amber-50">
@@ -215,6 +347,13 @@ export default function DiscoverPage() {
         </div>
       )}
 
+      {/* Demo mode banner */}
+      {isDemo && (
+        <div className="mb-4 px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-800">
+          🔑 <strong>Mode démo</strong> — Résultats fictifs pour démonstration. Ajoutez une clé <strong>Apollo</strong> dans Paramètres pour rechercher de vrais contacts.
+        </div>
+      )}
+
       {/* Results */}
       {searched && !planLimit && (
         <div>
@@ -223,7 +362,7 @@ export default function DiscoverPage() {
             <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
               <div className="flex items-center gap-3">
                 <p className="text-sm text-slate-600">
-                  <span className="font-semibold text-slate-900">{totalCount.toLocaleString()}</span> contact{totalCount !== 1 ? 's' : ''} trouvé{totalCount !== 1 ? 's' : ''} — page {currentPage}/{totalPages}
+                  <span className="font-semibold text-slate-900">{totalCount.toLocaleString()}</span> contact{totalCount !== 1 ? 's' : ''} {totalPages > 1 ? `— page ${currentPage}/${totalPages}` : ''}
                 </p>
                 <button
                   onClick={toggleSelectAll}

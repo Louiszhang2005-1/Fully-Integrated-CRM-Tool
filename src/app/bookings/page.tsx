@@ -162,6 +162,23 @@ export default function BookingsPage() {
   // Calendar
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
 
+  // Résumé month navigation
+  const [viewYear, setViewYear] = useState(() => new Date().getFullYear());
+  const [viewMonth, setViewMonth] = useState(() => new Date().getMonth());
+
+  const prevResumeMonth = () => {
+    if (viewMonth === 0) { setViewMonth(11); setViewYear(y => y - 1); }
+    else setViewMonth(m => m - 1);
+  };
+  const nextResumeMonth = () => {
+    const now = new Date();
+    if (viewYear > now.getFullYear() || (viewYear === now.getFullYear() && viewMonth >= now.getMonth())) return;
+    if (viewMonth === 11) { setViewMonth(0); setViewYear(y => y + 1); }
+    else setViewMonth(m => m + 1);
+  };
+  const resumeMonthLabel = new Date(viewYear, viewMonth, 1).toLocaleDateString('fr-CA', { month: 'long', year: 'numeric' });
+  const isCurrentMonth = viewYear === new Date().getFullYear() && viewMonth === new Date().getMonth();
+
   const fetchBookings = useCallback(async () => {
     if (!settings.bookingSheetId) {
       setError('Aucun Google Sheet de réservation configuré. Ajoutez l\'ID dans Paramètres → Réservations.');
@@ -241,10 +258,12 @@ export default function BookingsPage() {
   // Derived data for Résumé tab
   const accepted = bookings.filter((b) => getBookingStatus(b) === 'accepted');
   const now = new Date();
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-  const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  const startOfMonth = new Date(viewYear, viewMonth, 1);
+  const endOfMonth = new Date(viewYear, viewMonth + 1, 0);
   const thisMonthAccepted = accepted.filter((b) => {
-    const d = new Date(b.preferredDate);
+    const match = b.preferredDate.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (!match) return false;
+    const d = new Date(parseInt(match[1]), parseInt(match[2]) - 1, parseInt(match[3]));
     return d >= startOfMonth && d <= endOfMonth;
   });
 
@@ -258,12 +277,16 @@ export default function BookingsPage() {
   const endOfWeek = new Date(startOfWeek);
   endOfWeek.setDate(startOfWeek.getDate() + 6);
   endOfWeek.setHours(23, 59, 59, 999);
+  const parseDate = (iso: string) => {
+    const m = iso.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    return m ? new Date(parseInt(m[1]), parseInt(m[2]) - 1, parseInt(m[3])) : new Date(iso);
+  };
   const thisWeekAccepted = accepted
     .filter((b) => {
-      const d = new Date(b.preferredDate);
+      const d = parseDate(b.preferredDate);
       return d >= startOfWeek && d <= endOfWeek;
     })
-    .sort((a, b) => new Date(a.preferredDate).getTime() - new Date(b.preferredDate).getTime());
+    .sort((a, b) => parseDate(a.preferredDate).getTime() - parseDate(b.preferredDate).getTime());
 
   // By visit type
   const visitTypeCounts = Object.keys(VISIT_TYPE_LABELS).map((vt) => ({
@@ -279,6 +302,14 @@ export default function BookingsPage() {
     label: GROUP_TYPE_LABELS[gt as GroupType],
     count: accepted.filter((b) => b.groupType === gt).length,
   }));
+
+  // Sidebar quick stats (Demandes tab)
+  const pending = bookings.filter((b) => getBookingStatus(b) === 'pending');
+  const refused = bookings.filter((b) => getBookingStatus(b) === 'refused');
+  const totalRevenue = accepted.reduce((s, b) => s + computeRevenue(b), 0);
+  const nextBooking = accepted
+    .filter((b) => parseDate(b.preferredDate) >= new Date(now.getFullYear(), now.getMonth(), now.getDate()))
+    .sort((a, b) => parseDate(a.preferredDate).getTime() - parseDate(b.preferredDate).getTime())[0] || null;
 
   // Calendar day events
   const dayEvents = selectedDay
@@ -423,7 +454,9 @@ export default function BookingsPage() {
 
       {/* ── Tab: Demandes ── */}
       {tab === 'demandes' && (
-        <div className="space-y-6">
+        <div className="flex gap-6 items-start">
+          {/* Main bookings list */}
+          <div className="flex-1 min-w-0 space-y-6">
           {loading && (
             <div className="text-center py-12 text-slate-400 text-sm">Chargement des demandes…</div>
           )}
@@ -542,6 +575,52 @@ export default function BookingsPage() {
               </div>
             </div>
           )}
+          </div>
+          {/* Right sidebar */}
+          <div className="hidden lg:flex flex-col gap-4 w-72 flex-shrink-0 sticky top-6">
+            {/* Status summary */}
+            <div className="card-elevated p-5">
+              <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">Aperçu</h3>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-slate-600">⏳ En attente</span>
+                  <span className="text-sm font-bold text-amber-600">{pending.length}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-slate-600">✅ Confirmées</span>
+                  <span className="text-sm font-bold text-green-700">{accepted.length}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-slate-600">❌ Refusées</span>
+                  <span className="text-sm font-bold text-slate-400">{refused.length}</span>
+                </div>
+                <div className="pt-2 border-t border-slate-100">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-slate-600">💰 Revenus totaux</span>
+                    <span className="text-sm font-bold text-green-700">{fmtCurrency(totalRevenue)}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* Next booking */}
+            {nextBooking && (
+              <div className="card-elevated p-5">
+                <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Prochaine visite</h3>
+                <p className="font-semibold text-slate-900 text-sm">{nextBooking.fullName}</p>
+                <p className="text-xs text-slate-500 mb-2">{nextBooking.organization}</p>
+                <div className="bg-green-50 rounded-lg p-3 space-y-1">
+                  <p className="text-xs text-slate-700">📅 {fmtDate(nextBooking.preferredDate)}</p>
+                  <p className="text-xs text-slate-700">👥 {nextBooking.nbPeople} personnes</p>
+                  <p className="text-xs font-semibold text-green-700">≈ {fmtCurrency(computeRevenue(nextBooking))}</p>
+                </div>
+              </div>
+            )}
+            {!nextBooking && accepted.length === 0 && (
+              <div className="card-elevated p-5 text-center">
+                <p className="text-xs text-slate-400">Aucune visite confirmée à venir.</p>
+              </div>
+            )}
+          </div>
         </div>
       )}
 
@@ -591,32 +670,58 @@ export default function BookingsPage() {
       {/* ── Tab: Résumé ── */}
       {tab === 'resume' && (
         <div className="space-y-6">
+          {/* Month navigation */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <button className="btn btn-secondary btn-sm" onClick={prevResumeMonth}>←</button>
+              <h2 className="text-base font-semibold text-slate-800 capitalize min-w-[160px] text-center">{resumeMonthLabel}</h2>
+              <button className="btn btn-secondary btn-sm" onClick={nextResumeMonth} disabled={isCurrentMonth}>→</button>
+            </div>
+            {!isCurrentMonth && (
+              <button
+                className="text-xs text-primary font-medium hover:underline"
+                onClick={() => { setViewMonth(new Date().getMonth()); setViewYear(new Date().getFullYear()); }}
+              >
+                ↩ Mois actuel
+              </button>
+            )}
+          </div>
+
           {/* Stats cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="card-elevated p-5">
-              <p className="text-xs text-slate-400 uppercase tracking-wider mb-1">Visites ce mois</p>
-              <p className="text-3xl font-bold text-slate-900">{thisMonthAccepted.length}</p>
-              <p className="text-xs text-slate-400 mt-1">confirmées</p>
+            <div className="card-elevated p-6">
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Visites confirmées</p>
+                <span className="text-2xl">📅</span>
+              </div>
+              <p className="text-4xl font-bold text-slate-900">{thisMonthAccepted.length}</p>
+              <p className="text-xs text-slate-400 mt-2">ce mois-ci</p>
             </div>
-            <div className="card-elevated p-5">
-              <p className="text-xs text-slate-400 uppercase tracking-wider mb-1">Personnes ce mois</p>
-              <p className="text-3xl font-bold text-slate-900">{totalPeopleMonth}</p>
-              <p className="text-xs text-slate-400 mt-1">visiteurs attendus</p>
+            <div className="card-elevated p-6">
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Visiteurs attendus</p>
+                <span className="text-2xl">👥</span>
+              </div>
+              <p className="text-4xl font-bold text-slate-900">{totalPeopleMonth}</p>
+              <p className="text-xs text-slate-400 mt-2">personnes</p>
             </div>
-            <div className="card-elevated p-5">
-              <p className="text-xs text-slate-400 uppercase tracking-wider mb-1">Revenus estimés</p>
-              <p className="text-3xl font-bold text-green-700">{fmtCurrency(totalRevenueMonth)}</p>
-              <p className="text-xs text-slate-400 mt-1">ce mois-ci</p>
+            <div className="card-elevated p-6">
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Revenus estimés</p>
+                <span className="text-2xl">💰</span>
+              </div>
+              <p className="text-4xl font-bold text-green-700">{fmtCurrency(totalRevenueMonth)}</p>
+              <p className="text-xs text-slate-400 mt-2">ce mois-ci</p>
             </div>
           </div>
 
-          {/* This week */}
+          {/* This week / month bookings */}
           <div className="card-elevated p-5">
             <h3 className="text-sm font-semibold text-slate-600 uppercase tracking-wider mb-3">
-              Cette semaine
+              {isCurrentMonth ? 'Cette semaine' : `Visites de ${resumeMonthLabel}`}
             </h3>
-            {thisWeekAccepted.length === 0 ? (
-              <p className="text-sm text-slate-400">Aucune visite confirmée cette semaine.</p>
+            {(isCurrentMonth ? thisWeekAccepted : thisMonthAccepted).length === 0 ? (
+              <p className="text-sm text-slate-400">{isCurrentMonth ? 'Aucune visite confirmée cette semaine.' : 'Aucune visite confirmée ce mois.'}</p>
             ) : (
               <table className="table">
                 <thead>
@@ -629,7 +734,7 @@ export default function BookingsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {thisWeekAccepted.map((b) => (
+                  {(isCurrentMonth ? thisWeekAccepted : thisMonthAccepted).map((b) => (
                     <tr key={b.id}>
                       <td className="text-sm font-medium text-slate-800">{fmtDate(b.preferredDate)}</td>
                       <td className="text-sm text-slate-600">{b.organization}</td>
