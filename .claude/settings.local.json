@@ -5,7 +5,10 @@
       "Bash(npm run:*)",
       "Bash(npm list:*)",
       "Bash(netstat -ano)",
-      "Bash(findstr :3000)"
+      "Bash(findstr :3000)",
+      "Bash(taskkill /F /IM node.exe)",
+      "Bash(taskkill /PID 22888 /F)",
+      "Bash(taskkill //PID 22888 //F)"
     ]
   }
 }
