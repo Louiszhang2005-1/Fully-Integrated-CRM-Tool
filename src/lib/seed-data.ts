@@ -1,5 +1,10 @@
 import { Contact, AudienceType } from './types';
 
+export const SEED_VERSION = 'v2';
+
+// Helpers for realistic sentAt dates spread across April 2026
+const d = (day: number) => new Date(2026, 3, day, 9, 30).toISOString(); // April 2026
+
 // Seed contacts pre-loaded from the PRD
 export const SEED_CONTACTS: Omit<Contact, 'id' | 'createdAt'>[] = [
   // ===== CORPORATIF =====
@@ -9,8 +14,10 @@ export const SEED_CONTACTS: Omit<Contact, 'id' | 'createdAt'>[] = [
     title: 'Conseillère, Communication interne',
     linkedinUrl: 'https://linkedin.com/in/isabellelajoie',
     channel: 'linkedin',
-    status: 'a_contacter',
+    status: 'en_discussion',
     audienceType: 'corporatif',
+    sentAt: d(1),
+    lastAction: 'A répondu positivement, intéressée par une visite en mai',
   },
   {
     fullName: 'Ève Giard',
@@ -18,8 +25,9 @@ export const SEED_CONTACTS: Omit<Contact, 'id' | 'createdAt'>[] = [
     title: '1ère VP Talent et Performance',
     linkedinUrl: 'https://linkedin.com/in/eve-giard-3b2417129',
     channel: 'linkedin',
-    status: 'a_contacter',
+    status: 'envoye',
     audienceType: 'corporatif',
+    sentAt: d(2),
   },
   {
     fullName: 'Lucie Houle',
@@ -27,17 +35,21 @@ export const SEED_CONTACTS: Omit<Contact, 'id' | 'createdAt'>[] = [
     title: 'VP Culture et Talent',
     linkedinUrl: 'https://linkedin.com/in/luciehoule',
     channel: 'linkedin',
-    status: 'a_contacter',
+    status: 'confirme',
     audienceType: 'corporatif',
+    sentAt: d(1),
+    lastAction: 'Visite confirmée pour le 18 avril, groupe de 22 personnes',
   },
   {
     fullName: 'Charles Bernardi',
     organization: 'Desjardins',
     title: 'Leader de pratique ESG',
     linkedinUrl: 'https://linkedin.com/in/charles-bernardi-09a60278',
-    channel: 'linkedin',
-    status: 'a_contacter',
+    email: 'c.bernardi@desjardins.com',
+    channel: 'email',
+    status: 'envoye',
     audienceType: 'corporatif',
+    sentAt: d(3),
   },
   {
     fullName: 'Philippe Carrier',
@@ -45,26 +57,31 @@ export const SEED_CONTACTS: Omit<Contact, 'id' | 'createdAt'>[] = [
     title: 'Directeur Communications',
     linkedinUrl: 'https://linkedin.com/in/philippecarrier',
     channel: 'linkedin',
-    status: 'a_contacter',
+    status: 'envoye',
     audienceType: 'corporatif',
+    sentAt: d(3),
   },
   {
     fullName: 'Ève Laurier',
     organization: 'Bombardier',
     title: 'VP Communications et Marketing',
-    linkedinUrl: 'https://linkedin.com/in/evelaurier',
-    channel: 'linkedin',
-    status: 'a_contacter',
+    email: 'e.laurier@bombardier.com',
+    channel: 'email',
+    status: 'en_discussion',
     audienceType: 'corporatif',
+    sentAt: d(2),
+    lastAction: 'Demande d\'informations sur les tarifs pour groupe de 30',
   },
   {
     fullName: 'Marie Lemire',
     organization: 'WSP Global',
     title: 'Manager, Internal Communications',
     linkedinUrl: 'https://linkedin.com/in/marielemirecomm',
-    channel: 'linkedin',
-    status: 'a_contacter',
+    email: 'm.lemire@wsp.com',
+    channel: 'email',
+    status: 'envoye',
     audienceType: 'corporatif',
+    sentAt: d(4),
   },
   {
     fullName: 'Katerina Pettas',
@@ -101,8 +118,9 @@ export const SEED_CONTACTS: Omit<Contact, 'id' | 'createdAt'>[] = [
     title: 'Directrice générale',
     linkedinUrl: 'https://linkedin.com/in/isabelle-gelinas',
     channel: 'linkedin',
-    status: 'a_contacter',
+    status: 'envoye',
     audienceType: 'ecoles',
+    sentAt: d(5),
   },
   {
     fullName: 'Stéphanie Lapointe',
@@ -110,8 +128,10 @@ export const SEED_CONTACTS: Omit<Contact, 'id' | 'createdAt'>[] = [
     title: 'Dir. ressources éducatives',
     linkedinUrl: 'https://linkedin.com/in/stéphanie-lapointe-a9163ab2',
     channel: 'linkedin',
-    status: 'a_contacter',
+    status: 'en_discussion',
     audienceType: 'ecoles',
+    sentAt: d(4),
+    lastAction: 'Souhaite planifier une visite pour 35 élèves de secondaire 4',
   },
   {
     fullName: 'Natalie Lacombe',
@@ -127,9 +147,12 @@ export const SEED_CONTACTS: Omit<Contact, 'id' | 'createdAt'>[] = [
     organization: 'HEC Montréal',
     title: 'Dir. Transition durable',
     linkedinUrl: 'https://linkedin.com/in/cgrange',
-    channel: 'linkedin',
-    status: 'a_contacter',
+    email: 'c.grange@hec.ca',
+    channel: 'email',
+    status: 'confirme',
     audienceType: 'ecoles',
+    sentAt: d(2),
+    lastAction: 'Visite confirmée pour groupe de 28 étudiants MBA, 25 avril',
   },
   {
     fullName: 'Peter Garber',
@@ -137,8 +160,9 @@ export const SEED_CONTACTS: Omit<Contact, 'id' | 'createdAt'>[] = [
     title: 'Sustainability Officer',
     email: 'peter.garber@mcgill.ca',
     channel: 'email',
-    status: 'a_contacter',
+    status: 'envoye',
     audienceType: 'ecoles',
+    sentAt: d(5),
   },
   {
     fullName: 'Rebecca Black',
@@ -175,8 +199,9 @@ export const SEED_CONTACTS: Omit<Contact, 'id' | 'createdAt'>[] = [
     title: 'Dir. Développement des affaires',
     linkedinUrl: 'https://linkedin.com/in/aapaquet',
     channel: 'linkedin',
-    status: 'a_contacter',
+    status: 'envoye',
     audienceType: 'institutions',
+    sentAt: d(6),
   },
   {
     fullName: 'Élise Tastet',
@@ -184,8 +209,10 @@ export const SEED_CONTACTS: Omit<Contact, 'id' | 'createdAt'>[] = [
     title: 'Fondatrice et PDG',
     email: 'elise@tastet.ca',
     channel: 'email',
-    status: 'a_contacter',
+    status: 'en_discussion',
     audienceType: 'institutions',
+    sentAt: d(3),
+    lastAction: 'Intéressée par un article sur La Centrale, demande plus de détails',
   },
   {
     fullName: 'Ariane Desrochers',
@@ -193,8 +220,9 @@ export const SEED_CONTACTS: Omit<Contact, 'id' | 'createdAt'>[] = [
     title: 'Rédactrice en chef',
     email: 'ariane.desrochers@laterre.ca',
     channel: 'email',
-    status: 'a_contacter',
+    status: 'envoye',
     audienceType: 'institutions',
+    sentAt: d(6),
   },
   {
     fullName: 'Olivier Robichaud',
@@ -248,7 +276,8 @@ export const SEED_CONTACTS: Omit<Contact, 'id' | 'createdAt'>[] = [
     channel: 'email',
     status: 'confirme',
     audienceType: 'institutions',
-    notes: 'Partenaire existant',
+    sentAt: d(1),
+    notes: 'Partenaire existant — visite de délégation confirmée le 10 avril',
   },
   {
     fullName: 'Gilbert Samaha',
@@ -257,6 +286,7 @@ export const SEED_CONTACTS: Omit<Contact, 'id' | 'createdAt'>[] = [
     channel: 'email',
     status: 'confirme',
     audienceType: 'institutions',
+    sentAt: d(2),
     notes: 'Partenaire existant',
   },
 ];

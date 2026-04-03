@@ -48,18 +48,20 @@ function fmtCurrency(n: number): string {
   return n.toLocaleString('fr-CA', { style: 'currency', currency: 'CAD', maximumFractionDigits: 0 });
 }
 
-function getBookingStatus(b: BookingRequest): 'pending' | 'accepted' | 'refused' {
+function getBookingStatus(b: BookingRequest): 'pending' | 'accepted' | 'refused' | 'cancelled' {
   const r = (b.adminResponse || '').toLowerCase();
   if (r.startsWith('accepted')) return 'accepted';
   if (r.startsWith('refused')) return 'refused';
+  if (r.startsWith('cancelled')) return 'cancelled';
   return 'pending';
 }
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
-function StatusBadge({ status }: { status: 'pending' | 'accepted' | 'refused' }) {
+function StatusBadge({ status }: { status: 'pending' | 'accepted' | 'refused' | 'cancelled' }) {
   if (status === 'accepted') return <span className="badge badge-confirme">✅ Confirmé</span>;
   if (status === 'refused') return <span className="badge badge-refuse">❌ Refusé</span>;
+  if (status === 'cancelled') return <span className="badge badge-refuse">Annulé</span>;
   return <span className="badge badge-a_contacter">⏳ En attente</span>;
 }
 
@@ -157,6 +159,8 @@ export default function BookingsPage() {
   const [acceptTarget, setAcceptTarget] = useState<BookingRequest | null>(null);
   const [refuseTarget, setRefuseTarget] = useState<BookingRequest | null>(null);
   const [refuseReason, setRefuseReason] = useState('');
+  const [cancelTarget, setCancelTarget] = useState<BookingRequest | null>(null);
+  const [cancelReason, setCancelReason] = useState('');
   const [responding, setResponding] = useState(false);
 
   // Calendar
@@ -239,6 +243,8 @@ export default function BookingsPage() {
                 adminResponse:
                   action === 'accept'
                     ? `accepted — ${stamp}`
+                    : action === 'cancel'
+                    ? `cancelled — ${stamp}${cancelReason ? ` — ${cancelReason}` : ''}`
                     : `refused — ${stamp}${refuseReason ? ` — ${refuseReason}` : ''}`,
               }
             : bk
@@ -247,6 +253,8 @@ export default function BookingsPage() {
       setAcceptTarget(null);
       setRefuseTarget(null);
       setRefuseReason('');
+      setCancelTarget(null);
+      setCancelReason('');
       fetchBookings();
     } catch (err) {
       addToast(`Erreur: ${err instanceof Error ? err.message : 'Inconnue'}`, 'error');
@@ -306,6 +314,7 @@ export default function BookingsPage() {
   // Sidebar quick stats (Demandes tab)
   const pending = bookings.filter((b) => getBookingStatus(b) === 'pending');
   const refused = bookings.filter((b) => getBookingStatus(b) === 'refused');
+  const cancelled = bookings.filter((b) => getBookingStatus(b) === 'cancelled');
   const totalRevenue = accepted.reduce((s, b) => s + computeRevenue(b), 0);
   const nextBooking = accepted
     .filter((b) => parseDate(b.preferredDate) >= new Date(now.getFullYear(), now.getMonth(), now.getDate()))
@@ -396,6 +405,47 @@ export default function BookingsPage() {
         </div>
       )}
 
+      {/* Cancel modal */}
+      {cancelTarget && (
+        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
+          <div className="card-elevated p-6 max-w-md w-full">
+            <h2 className="text-lg font-bold text-slate-900 mb-1">Annuler la réservation</h2>
+            <p className="text-sm text-slate-500 mb-4">
+              Envoyer un avis d&apos;annulation à <strong>{cancelTarget.fullName}</strong> ({cancelTarget.email})
+            </p>
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 text-xs text-slate-700 space-y-1 mb-5">
+              <p>📅 <strong>Date :</strong> {fmtDate(cancelTarget.preferredDate)}</p>
+              <p>👥 <strong>Groupe :</strong> {cancelTarget.nbPeople} pers. · {GROUP_TYPE_LABELS[cancelTarget.groupType as GroupType]}</p>
+              <p className="pt-1 font-semibold text-slate-500 line-through">Revenu perdu : {fmtCurrency(computeRevenue(cancelTarget))}</p>
+            </div>
+            <div className="mb-4">
+              <label className="label">Raison de l&apos;annulation (optionnel)</label>
+              <textarea
+                className="textarea"
+                rows={3}
+                placeholder="ex: Un imprévu nous oblige à annuler cette date. Nous vous invitons à nous recontacter pour planifier une nouvelle visite."
+                value={cancelReason}
+                onChange={(e) => setCancelReason(e.target.value)}
+              />
+            </div>
+            <div className="flex gap-3">
+              <button
+                className="btn btn-danger flex-1"
+                onClick={() => handleRespond('cancel', cancelTarget)}
+                disabled={responding}
+              >
+                {responding ? (
+                  <span className="inline-block w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                ) : 'Envoyer l\'avis d\'annulation'}
+              </button>
+              <button className="btn btn-secondary" onClick={() => { setCancelTarget(null); setCancelReason(''); }} disabled={responding}>
+                Retour
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex items-start justify-between mb-6 flex-wrap gap-3">
         <div>
@@ -420,6 +470,32 @@ export default function BookingsPage() {
           Rafraîchir
         </button>
       </div>
+
+      {/* Revenue stat bar */}
+      {bookings.length > 0 && (
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+          <div className="stat-card">
+            <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Revenu total confirmé</p>
+            <p className="text-2xl font-bold text-green-700">{fmtCurrency(totalRevenue)}</p>
+            <p className="text-xs text-slate-400 mt-1">{accepted.length} visite{accepted.length !== 1 ? 's' : ''} confirmée{accepted.length !== 1 ? 's' : ''}</p>
+          </div>
+          <div className="stat-card">
+            <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">En attente</p>
+            <p className="text-2xl font-bold text-amber-600">{pending.length}</p>
+            <p className="text-xs text-slate-400 mt-1">demande{pending.length !== 1 ? 's' : ''} à traiter</p>
+          </div>
+          <div className="stat-card">
+            <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Ce mois-ci</p>
+            <p className="text-2xl font-bold text-slate-900">{fmtCurrency(totalRevenueMonth)}</p>
+            <p className="text-xs text-slate-400 mt-1">{thisMonthAccepted.length} visite{thisMonthAccepted.length !== 1 ? 's' : ''}</p>
+          </div>
+          <div className="stat-card">
+            <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Personnes totales</p>
+            <p className="text-2xl font-bold text-slate-900">{accepted.reduce((s, b) => s + b.nbPeople, 0)}</p>
+            <p className="text-xs text-slate-400 mt-1">participants confirmés</p>
+          </div>
+        </div>
+      )}
 
       {/* Tabs */}
       <div className="flex gap-1 mb-6 p-1 bg-slate-100 rounded-xl w-fit">
@@ -539,6 +615,12 @@ export default function BookingsPage() {
                           {b.notes && <p className="text-xs text-slate-400 mt-2 italic">{b.notes}</p>}
                           {b.email && <p className="text-xs text-slate-400 mt-1">{b.email}{b.phone && ` · ${b.phone}`}</p>}
                         </div>
+                        <button
+                          className="btn btn-secondary btn-sm flex-shrink-0"
+                          onClick={() => { setCancelTarget(b); setCancelReason(''); }}
+                        >
+                          Annuler
+                        </button>
                       </div>
                     </div>
                   );
@@ -575,6 +657,37 @@ export default function BookingsPage() {
               </div>
             </div>
           )}
+          {/* Annulés */}
+          {cancelled.length > 0 && (
+            <div>
+              <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-500 mb-3">
+                Annulées ({cancelled.length})
+              </h2>
+              <div className="space-y-3">
+                {cancelled.map((b) => {
+                  const rev = computeRevenue(b);
+                  return (
+                    <div key={b.id} className="card-elevated p-5 border-l-4 border-slate-300 opacity-60">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-1 flex-wrap">
+                          <h3 className="font-semibold text-slate-500 line-through">{b.fullName}</h3>
+                          <span className="text-sm text-slate-400">{b.organization}</span>
+                          <span className="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full font-medium">Annulé</span>
+                        </div>
+                        <div className="flex flex-wrap gap-3 text-xs text-slate-400 mt-1">
+                          <span>📅 {fmtDate(b.preferredDate)}</span>
+                          <span>👥 {b.nbPeople} personnes</span>
+                          <span>🌿 {VISIT_TYPE_LABELS[b.visitType as VisitType] || b.visitType}</span>
+                          <span className="line-through">≈ {fmtCurrency(rev)}</span>
+                        </div>
+                        {b.email && <p className="text-xs text-slate-400 mt-1">{b.email}</p>}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
           </div>
           {/* Right sidebar */}
           <div className="hidden lg:flex flex-col gap-4 w-72 flex-shrink-0 sticky top-6">
@@ -593,6 +706,10 @@ export default function BookingsPage() {
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-slate-600">❌ Refusées</span>
                   <span className="text-sm font-bold text-slate-400">{refused.length}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-slate-600">Annulées</span>
+                  <span className="text-sm font-bold text-slate-400">{cancelled.length}</span>
                 </div>
                 <div className="pt-2 border-t border-slate-100">
                   <div className="flex items-center justify-between">

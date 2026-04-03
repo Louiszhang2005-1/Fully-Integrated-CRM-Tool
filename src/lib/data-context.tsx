@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react';
 import { Campaign, Contact, Settings, AudienceType, ContactStatus } from './types';
-import { SEED_CONTACTS, DEFAULT_TEMPLATES } from './seed-data';
+import { SEED_CONTACTS, DEFAULT_TEMPLATES, SEED_VERSION } from './seed-data';
 
 function generateId(): string {
   return Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
@@ -69,7 +69,8 @@ export function useData(): DataContextType {
 function initContacts(): Contact[] {
   if (typeof window === 'undefined') return [];
   const stored = localStorage.getItem('crm_contacts');
-  if (stored) return JSON.parse(stored);
+  const storedVersion = localStorage.getItem('crm_seed_version');
+  if (stored && storedVersion === SEED_VERSION) return JSON.parse(stored);
 
   const contacts: Contact[] = SEED_CONTACTS.map((c) => ({
     ...c,
@@ -77,6 +78,7 @@ function initContacts(): Contact[] {
     createdAt: new Date().toISOString(),
   }));
   localStorage.setItem('crm_contacts', JSON.stringify(contacts));
+  localStorage.setItem('crm_seed_version', SEED_VERSION);
   return contacts;
 }
 

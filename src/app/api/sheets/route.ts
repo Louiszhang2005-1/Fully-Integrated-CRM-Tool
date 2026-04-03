@@ -13,7 +13,7 @@ import { google } from 'googleapis';
  * Run POST /api/sheets/setup once to create all tabs with headers and dropdowns.
  */
 
-const MVP_LIMIT = 5;
+const MVP_LIMIT = 500;
 
 const PIPELINE_TAB: Record<string, string> = {
   corporatif: 'Corporatif',
@@ -62,18 +62,24 @@ export async function POST(request: NextRequest) {
 
     const sheets = google.sheets({ version: 'v4', auth });
 
-    const now = new Date().toLocaleString('fr-CA', {
-      timeZone: 'America/Toronto',
-      year: 'numeric', month: '2-digit', day: '2-digit',
-      hour: '2-digit', minute: '2-digit',
-    });
+    const toMontreal = (d: Date) =>
+      d.toLocaleString('fr-CA', {
+        timeZone: 'America/Toronto',
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit',
+      });
 
-    const sentDate = sentAt
-      ? new Date(sentAt).toLocaleString('fr-CA', {
-          timeZone: 'America/Toronto',
-          year: 'numeric', month: '2-digit', day: '2-digit',
-        })
-      : now.split(',')[0];
+    const toMontrealDate = (d: Date) =>
+      d.toLocaleDateString('fr-CA', {
+        timeZone: 'America/Toronto',
+        year: 'numeric', month: '2-digit', day: '2-digit',
+      });
+
+    const now = toMontreal(new Date());
+
+    const sentDate = sentAt && !isNaN(new Date(sentAt).getTime())
+      ? toMontrealDate(new Date(sentAt))
+      : toMontrealDate(new Date());
 
     // ── Columns for ALL tabs: Date | Nom | Courriel | Téléphone | Titre | Organisation | LinkedIn | Audience | Objet | Canal | Statut
 

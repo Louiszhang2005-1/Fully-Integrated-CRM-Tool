@@ -55,6 +55,24 @@ Responsable communications et événements<br/>
 La Centrale Agricole | <a href="mailto:nora@centrale.coop">nora@centrale.coop</a> | centrale.coop</p>`;
 }
 
+function buildCancelHtml(booking: { fullName: string; preferredDate: string }, reason?: string): string {
+  const firstName = booking.fullName.split(' ')[0];
+
+  return `<p>Bonjour ${firstName},</p>
+
+<p>Nous vous contactons au sujet de votre réservation à <strong>La Centrale Agricole</strong> prévue le ${booking.preferredDate}.</p>
+
+<p>Nous sommes dans l'obligation d'annuler cette visite.${reason ? ` ${reason}` : ''}</p>
+
+<p>Nous sommes sincèrement désolés pour ce désagrément. N'hésitez pas à nous recontacter pour planifier une nouvelle date — il nous fera plaisir de vous accueillir.</p>
+
+<p>Pour toute question, écrivez-nous à <a href="mailto:nora@centrale.coop">nora@centrale.coop</a>.</p>
+
+<p><strong>Nora Azouz</strong><br/>
+Responsable communications et événements<br/>
+La Centrale Agricole | <a href="mailto:nora@centrale.coop">nora@centrale.coop</a> | centrale.coop</p>`;
+}
+
 function buildRefuseHtml(booking: { fullName: string }, reason?: string): string {
   const firstName = booking.fullName.split(' ')[0];
 
@@ -93,11 +111,16 @@ export async function POST(request: NextRequest) {
     const fromField = `Nora Azouz — La Centrale Agricole <${fromEmail}>`;
 
     const isAccept = action === 'accept';
+    const isCancel = action === 'cancel';
     const subject = isAccept
       ? `Confirmation de votre visite — La Centrale Agricole`
+      : isCancel
+      ? `Annulation de votre visite — La Centrale Agricole`
       : `Votre demande de visite — La Centrale Agricole`;
     const html = isAccept
       ? buildAcceptHtml(booking)
+      : isCancel
+      ? buildCancelHtml(booking, reason)
       : buildRefuseHtml(booking, reason);
 
     const { error: sendError } = await resend.emails.send({
@@ -127,6 +150,8 @@ export async function POST(request: NextRequest) {
           const sheets = google.sheets({ version: 'v4', auth });
           const responseValue = isAccept
             ? `accepted — ${new Date().toISOString()}`
+            : isCancel
+            ? `cancelled — ${new Date().toISOString()}${reason ? ` — ${reason}` : ''}`
             : `refused — ${new Date().toISOString()}${reason ? ` — ${reason}` : ''}`;
 
           // Resolve exact sheet title via metadata (avoids quoting/encoding issues)

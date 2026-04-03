@@ -151,7 +151,9 @@ export default function LookupPage() {
 
   // ── Generate message ──
   const handleGenerateMessage = async () => {
-    const nameToUse = parsedName || (linkedinUrl ? linkedinUrl.replace(/\/$/, '').split('/').pop()?.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') || 'Contact' : 'Contact');
+    // Strip query params / fragments from LinkedIn URL before using it
+    const cleanLinkedinUrl = linkedinUrl.replace(/[?#].*$/, '').replace(/\/$/, '');
+    const nameToUse = parsedName || (cleanLinkedinUrl ? cleanLinkedinUrl.split('/').pop()?.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') || 'Contact' : 'Contact');
     const titleToUse = parsedTitle || 'Professionnel';
     const orgToUse = parsedOrg || 'Organisation';
 
@@ -173,6 +175,8 @@ export default function LookupPage() {
           contactOrg: orgToUse,
           audienceType,
           template: template.body,
+          websiteUrl: 'https://centrale.coop/les-visites/',
+          bookingLink: 'https://docs.google.com/forms/d/e/1FAIpQLSdxra3cCffMxZMlEVXF1f-V4D69zd5PsqhNh--B-XKGyhtLNQ/viewform?usp=header',
         }),
       });
 
@@ -270,11 +274,11 @@ export default function LookupPage() {
             phone: result.phone,
             title: result.title,
             org: result.org,
-            linkedinUrl,
+            linkedinUrl: linkedinUrl.replace(/[?#].*$/, '').replace(/\/$/, ''),
             audienceType,
             subject: result.message.subject,
             channel: 'email',
-            sentAt: new Date().toLocaleString('fr-CA', { timeZone: 'America/Toronto' }),
+            sentAt: new Date().toISOString(),
           }),
         });
         if (sheetRes.ok) {

@@ -58,12 +58,13 @@ export async function POST(request: NextRequest) {
     const ai = new GoogleGenAI({ apiKey });
 
     const visitLink = websiteUrl || 'https://centrale.coop/les-visites/';
+    const formLink = bookingLink || 'https://docs.google.com/forms/d/e/1FAIpQLSdxra3cCffMxZMlEVXF1f-V4D69zd5PsqhNh--B-XKGyhtLNQ/viewform?usp=header';
     const caseStudy = CASE_STUDIES[audienceType] || CASE_STUDIES['corporatif'];
 
     const linksBlock = [
-      `- Lien page visites : ${visitLink}`,
+      `- Site web & visites : ${visitLink}`,
+      `- Formulaire de réservation : ${formLink}`,
       pdfUrl ? `- Guide PDF des visites : ${pdfUrl}` : null,
-      bookingLink ? `- Lien de réservation : ${bookingLink}` : null,
     ]
       .filter(Boolean)
       .join('\n');
@@ -81,9 +82,9 @@ Règles:
 - Limite le message email à 150-200 mots, le message LinkedIn à 100 mots max
 - Inclus une signature de Nora Azouz, Responsable communications et événements, La Centrale Agricole | nora@centrale.coop | centrale.coop
 - Ne mets PAS de crochets ou de placeholders — utilise les vraies infos du contact
-- Inclus naturellement le lien de la page visites dans le corps du message
-- Si un PDF est fourni, invite le contact à le consulter
-- Si un lien de réservation est fourni, termine avec un appel à l'action vers ce lien
+- N'utilise AUCUN emoji dans le message email ni dans le message LinkedIn
+- Inclus naturellement le lien du site web (centrale.coop/les-visites/) dans le corps du message
+- Termine toujours l'email avec un appel à l'action vers le formulaire de réservation fourni
 - Ajoute une ligne de désinscription CASL discrète à la fin : "Si vous ne souhaitez plus recevoir de communications, répondez à ce courriel."
 
 Génère un courriel personnalisé pour ce contact:
@@ -138,9 +139,16 @@ IMPORTANT: Réponds UNIQUEMENT avec un objet JSON valide, sans markdown, sans ba
 
     const generated = JSON.parse(jsonMatch[0]);
 
+    // Always inject the links at the end of the body so they appear
+    // regardless of whether Gemini chose to include them.
+    const generatedBody: string = generated.body || rawText;
+    const ctaBlock = `\nPour réserver votre visite, remplissez le formulaire ici : ${formLink}\n\nEn savoir plus sur nos visites : ${visitLink}`;
+    const bodyAlreadyHasForm = generatedBody.includes('docs.google.com/forms') || generatedBody.includes(formLink);
+    const finalBody = bodyAlreadyHasForm ? generatedBody : generatedBody + '\n' + ctaBlock;
+
     return Response.json({
       subject: generated.subject || 'Visite – La Centrale Agricole',
-      body: generated.body || rawText,
+      body: finalBody,
       linkedin: generated.linkedin || '',
     });
   } catch (error) {

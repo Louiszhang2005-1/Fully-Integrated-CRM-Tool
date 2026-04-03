@@ -93,9 +93,7 @@ export default function DiscoverPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [searched, setSearched] = useState(false);
   const [planLimit, setPlanLimit] = useState(false);
-  const [isDemo, setIsDemo] = useState(false);
   const [selected, setSelected] = useState<Set<number>>(new Set());
-  const [csvMode, setCsvMode] = useState(false);
   const [csvDragOver, setCsvDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -131,7 +129,6 @@ export default function DiscoverPage() {
       setTotalCount(data.totalCount || 0);
       setCurrentPage(data.page || page);
       setTotalPages(data.totalPages || 1);
-      setIsDemo(data.isDemo === true);
     } catch {
       addToast('Erreur de connexion à Apollo', 'error');
     }
@@ -221,8 +218,57 @@ export default function DiscoverPage() {
         </p>
       </div>
 
-      {/* Search Panel */}
+      {/* CSV Import card — primary workflow */}
+      <div className="card-elevated p-5 mb-6">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <h2 className="text-sm font-semibold text-slate-800">Importer votre liste de contacts</h2>
+          </div>
+          <button
+            className="text-xs text-primary hover:underline font-medium"
+            onClick={downloadTemplate}
+          >
+            ↓ Télécharger le modèle CSV
+          </button>
+        </div>
+        <p className="text-xs text-slate-400 mb-3">
+          Colonnes reconnues : <span className="font-medium text-slate-600">Prénom, Nom, Titre, Organisation, Email, LinkedIn, Ville</span>. Compatible avec les exports LinkedIn.
+        </p>
+        <div
+          className={`border-2 border-dashed rounded-xl p-6 text-center transition-colors cursor-pointer ${
+            csvDragOver ? 'border-primary bg-green-50' : 'border-slate-200 hover:border-primary/50'
+          }`}
+          onClick={() => fileInputRef.current?.click()}
+          onDragOver={(e) => { e.preventDefault(); setCsvDragOver(true); }}
+          onDragLeave={() => setCsvDragOver(false)}
+          onDrop={(e) => {
+            e.preventDefault();
+            setCsvDragOver(false);
+            const file = e.dataTransfer.files[0];
+            if (file) handleCSVFile(file);
+          }}
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="mx-auto mb-2 text-slate-400">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          <p className="text-sm text-slate-500">Glissez un fichier <strong>.csv</strong> ici ou <span className="text-primary font-medium">parcourir</span></p>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".csv"
+            className="hidden"
+            onChange={(e) => { const f = e.target.files?.[0]; if (f) handleCSVFile(f); e.target.value = ''; }}
+          />
+        </div>
+      </div>
+
+      {/* Apollo Search — secondary, requires paid plan */}
       <div className="card-elevated p-6 mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-sm font-semibold text-slate-800">Recherche automatique de contacts</h2>
+          <span className="text-xs text-slate-400 bg-slate-100 px-2 py-1 rounded-full">Apollo.io — plan payant requis</span>
+        </div>
+
         {/* Audience Tabs */}
         <div className="mb-5">
           <label className="label mb-2">Type d&apos;audience</label>
@@ -287,48 +333,6 @@ export default function DiscoverPage() {
         </button>
       </div>
 
-      {/* CSV Import card */}
-      <div className="card-elevated p-5 mb-6">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <span className="text-lg">📂</span>
-            <h2 className="text-sm font-semibold text-slate-800">Importer depuis un fichier CSV</h2>
-          </div>
-          <button
-            className="text-xs text-primary hover:underline font-medium"
-            onClick={downloadTemplate}
-          >
-            ↓ Télécharger le modèle
-          </button>
-        </div>
-        <p className="text-xs text-slate-400 mb-3">
-          Colonnes reconnues : <span className="font-medium text-slate-600">Prénom, Nom, Titre, Organisation, Email, LinkedIn, Ville</span>. Compatible avec les exports LinkedIn.
-        </p>
-        <div
-          className={`border-2 border-dashed rounded-xl p-6 text-center transition-colors cursor-pointer ${
-            csvDragOver ? 'border-primary bg-green-50' : 'border-slate-200 hover:border-primary/50'
-          }`}
-          onClick={() => fileInputRef.current?.click()}
-          onDragOver={(e) => { e.preventDefault(); setCsvDragOver(true); }}
-          onDragLeave={() => setCsvDragOver(false)}
-          onDrop={(e) => {
-            e.preventDefault();
-            setCsvDragOver(false);
-            const file = e.dataTransfer.files[0];
-            if (file) handleCSVFile(file);
-          }}
-        >
-          <p className="text-sm text-slate-500">Glissez un fichier <strong>.csv</strong> ici ou <span className="text-primary font-medium">parcourir</span></p>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".csv"
-            className="hidden"
-            onChange={(e) => { const f = e.target.files?.[0]; if (f) handleCSVFile(f); e.target.value = ''; }}
-          />
-        </div>
-      </div>
-
       {/* Plan limit warning */}
       {planLimit && (
         <div className="card-elevated p-6 mb-6 border border-amber-200 bg-amber-50">
@@ -347,12 +351,6 @@ export default function DiscoverPage() {
         </div>
       )}
 
-      {/* Demo mode banner */}
-      {isDemo && (
-        <div className="mb-4 px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-800">
-          🔑 <strong>Mode démo</strong> — Résultats fictifs pour démonstration. Ajoutez une clé <strong>Apollo</strong> dans Paramètres pour rechercher de vrais contacts.
-        </div>
-      )}
 
       {/* Results */}
       {searched && !planLimit && (

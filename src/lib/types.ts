@@ -70,7 +70,7 @@ export interface Settings {
   bookingFormTab: string;
 }
 
-export type BookingStatus = 'pending' | 'accepted' | 'refused';
+export type BookingStatus = 'pending' | 'accepted' | 'refused' | 'cancelled';
 export type VisitType = 'alimentaire' | 'agriculture_urbaine' | 'economie_circulaire' | 'culinaire';
 export type GroupType = 'corporatif' | 'scolaire' | 'institution';
 export type CulinaryFormula = 'none' | 'decouverte' | 'degustation' | 'boite_lunch' | 'buffet' | 'cocktail';
