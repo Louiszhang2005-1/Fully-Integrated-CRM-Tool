@@ -269,13 +269,13 @@ export default function ContactsPage() {
                 </div>
               ))}
               {importPreview.rows.length > 5 && (
-                <p className="text-slate-400">…et {importPreview.rows.length - 5} autres</p>
+                <p className="text-slate-400">…and {importPreview.rows.length - 5} more</p>
               )}
             </div>
 
             <div className="mb-4">
-              <label className="label">Type d&apos;audience par défaut</label>
-              <p className="text-xs text-slate-400 mb-1">Appliqué aux contacts sans audience détectée dans le CSV</p>
+              <label className="label">Default audience type</label>
+              <p className="text-xs text-slate-400 mb-1">Applied to contacts without a detected audience in the CSV</p>
               <select
                 className="select"
                 value={importAudience}
