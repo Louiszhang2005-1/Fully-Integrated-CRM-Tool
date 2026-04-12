@@ -136,7 +136,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
               <IconLeaf />
             </div>
             <div>
-              <h1 className="text-base font-bold leading-tight">La Centrale</h1>
+              <h1 className="text-base font-bold leading-tight">Mon Organisation</h1>
               <p className="text-xs text-white/50">CRM Outreach</p>
             </div>
           </div>
@@ -202,7 +202,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
           >
             <IconMenu />
           </button>
-          <span className="ml-2 font-bold text-lg">La Centrale CRM</span>
+          <span className="ml-2 font-bold text-lg">Mon Organisation CRM</span>
         </div>
 
         <div className="max-w-7xl mx-auto">

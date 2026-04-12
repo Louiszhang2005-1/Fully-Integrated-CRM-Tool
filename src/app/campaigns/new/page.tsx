@@ -14,7 +14,7 @@ export default function NewCampaignPage() {
   const [audienceType, setAudienceType] = useState<AudienceType>('corporatif');
   const [aiPrompt, setAiPrompt] = useState(DEFAULT_TEMPLATES.corporatif.body);
   const [contactLimit, setContactLimit] = useState(25);
-  const [bookingLink, setBookingLink] = useState('https://centrale.coop/les-visites/');
+  const [bookingLink, setBookingLink] = useState('https://monorganisation.com/les-visites/');
   const [geography, setGeography] = useState('Montréal');
   const [pdfUrl, setPdfUrl] = useState('');
   const [autoDiscover, setAutoDiscover] = useState(false);
@@ -218,7 +218,7 @@ export default function NewCampaignPage() {
                 id="booking-link"
                 type="url"
                 className="input"
-                placeholder="https://centrale.coop/les-visites/"
+                placeholder="https://monorganisation.com/les-visites/"
                 value={bookingLink}
                 onChange={(e) => setBookingLink(e.target.value)}
               />

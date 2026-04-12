@@ -38,7 +38,7 @@ function buildAcceptHtml(booking: {
 
   return `<p>Bonjour ${firstName},</p>
 
-<p>Nous avons le plaisir de confirmer votre réservation pour une visite à <strong>La Centrale Agricole</strong> !</p>
+<p>Nous avons le plaisir de confirmer votre réservation pour une visite à <strong>Mon Organisation</strong> !</p>
 
 <ul>
   <li>📅 <strong>Date :</strong> ${booking.preferredDate}</li>
@@ -47,12 +47,12 @@ function buildAcceptHtml(booking: {
   <li>📍 <strong>Adresse :</strong> 7070 Henri-Julien Ave, Montréal, QC H2S 3B5</li>
 </ul>
 
-<p>Pour toute question, n'hésitez pas à nous écrire à <a href="mailto:nora@centrale.coop">nora@centrale.coop</a> ou à consulter notre page de visites : <a href="https://centrale.coop/les-visites/">centrale.coop/les-visites</a></p>
+<p>Pour toute question, n'hésitez pas à nous écrire à <a href="mailto:contact@monorganisation.com">contact@monorganisation.com</a> ou à consulter notre page de visites : <a href="https://monorganisation.com/les-visites/">monorganisation.com/les-visites</a></p>
 
 <p>Au plaisir de vous accueillir,</p>
 <p><strong>Nora Azouz</strong><br/>
 Responsable communications et événements<br/>
-La Centrale Agricole | <a href="mailto:nora@centrale.coop">nora@centrale.coop</a> | centrale.coop</p>`;
+Mon Organisation | <a href="mailto:contact@monorganisation.com">contact@monorganisation.com</a> | monorganisation.com</p>`;
 }
 
 function buildCancelHtml(booking: { fullName: string; preferredDate: string }, reason?: string): string {
@@ -60,17 +60,17 @@ function buildCancelHtml(booking: { fullName: string; preferredDate: string }, r
 
   return `<p>Bonjour ${firstName},</p>
 
-<p>Nous vous contactons au sujet de votre réservation à <strong>La Centrale Agricole</strong> prévue le ${booking.preferredDate}.</p>
+<p>Nous vous contactons au sujet de votre réservation à <strong>Mon Organisation</strong> prévue le ${booking.preferredDate}.</p>
 
 <p>Nous sommes dans l'obligation d'annuler cette visite.${reason ? ` ${reason}` : ''}</p>
 
 <p>Nous sommes sincèrement désolés pour ce désagrément. N'hésitez pas à nous recontacter pour planifier une nouvelle date — il nous fera plaisir de vous accueillir.</p>
 
-<p>Pour toute question, écrivez-nous à <a href="mailto:nora@centrale.coop">nora@centrale.coop</a>.</p>
+<p>Pour toute question, écrivez-nous à <a href="mailto:contact@monorganisation.com">contact@monorganisation.com</a>.</p>
 
 <p><strong>Nora Azouz</strong><br/>
 Responsable communications et événements<br/>
-La Centrale Agricole | <a href="mailto:nora@centrale.coop">nora@centrale.coop</a> | centrale.coop</p>`;
+Mon Organisation | <a href="mailto:contact@monorganisation.com">contact@monorganisation.com</a> | monorganisation.com</p>`;
 }
 
 function buildRefuseHtml(booking: { fullName: string }, reason?: string): string {
@@ -78,7 +78,7 @@ function buildRefuseHtml(booking: { fullName: string }, reason?: string): string
 
   return `<p>Bonjour ${firstName},</p>
 
-<p>Merci pour votre intérêt envers <strong>La Centrale Agricole</strong>.</p>
+<p>Merci pour votre intérêt envers <strong>Mon Organisation</strong>.</p>
 
 <p>Malheureusement, nous ne sommes pas en mesure de confirmer votre visite pour la date demandée.${reason ? ` ${reason}` : ''}</p>
 
@@ -86,7 +86,7 @@ function buildRefuseHtml(booking: { fullName: string }, reason?: string): string
 
 <p><strong>Nora Azouz</strong><br/>
 Responsable communications et événements<br/>
-La Centrale Agricole | <a href="mailto:nora@centrale.coop">nora@centrale.coop</a> | centrale.coop</p>`;
+Mon Organisation | <a href="mailto:contact@monorganisation.com">contact@monorganisation.com</a> | monorganisation.com</p>`;
 }
 
 export async function POST(request: NextRequest) {
@@ -108,15 +108,15 @@ export async function POST(request: NextRequest) {
     // 1. Send email response
     const resend = new Resend(resendKey);
     const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
-    const fromField = `Nora Azouz — La Centrale Agricole <${fromEmail}>`;
+    const fromField = `Nora Azouz — Mon Organisation <${fromEmail}>`;
 
     const isAccept = action === 'accept';
     const isCancel = action === 'cancel';
     const subject = isAccept
-      ? `Confirmation de votre visite — La Centrale Agricole`
+      ? `Confirmation de votre visite — Mon Organisation`
       : isCancel
-      ? `Annulation de votre visite — La Centrale Agricole`
-      : `Votre demande de visite — La Centrale Agricole`;
+      ? `Annulation de votre visite — Mon Organisation`
+      : `Votre demande de visite — Mon Organisation`;
     const html = isAccept
       ? buildAcceptHtml(booking)
       : isCancel
@@ -128,7 +128,7 @@ export async function POST(request: NextRequest) {
       to: [booking.email],
       subject,
       html,
-      replyTo: 'nora@centrale.coop',
+      replyTo: 'contact@monorganisation.com',
     });
 
     if (sendError) {

@@ -212,7 +212,7 @@ export const SEED_CONTACTS: Omit<Contact, 'id' | 'createdAt'>[] = [
     status: 'en_discussion',
     audienceType: 'institutions',
     sentAt: d(3),
-    lastAction: 'Intéressée par un article sur La Centrale, demande plus de détails',
+    lastAction: 'Intéressée par un article sur Mon Organisation, demande plus de détails',
   },
   {
     fullName: 'Ariane Desrochers',
@@ -293,12 +293,12 @@ export const SEED_CONTACTS: Omit<Contact, 'id' | 'createdAt'>[] = [
 
 export const DEFAULT_TEMPLATES: Record<AudienceType, { subject: string; body: string }> = {
   corporatif: {
-    subject: 'Visite privée – La Centrale Agricole, la plus grande coopérative d\'agriculture urbaine au monde',
+    subject: 'Visite privée – Mon Organisation, la plus grande coopérative d\'agriculture urbaine au monde',
     body: `Bonjour [Prénom],
 
 Je me permets de vous écrire au sujet d'une visite de groupe que nous croyons très pertinente pour votre équipe.
 
-La Centrale Agricole est la plus grande coopérative d'agriculture urbaine au monde : 20 entreprises réunies sous un même toit de 17 000 m² à Montréal, fonctionnant en économie circulaire. Vos employés plongeront dans le quotidien d'entrepreneur·e·s passionné·e·s qui produisent du cidre, du vin, des champignons, des légumes-feuilles et des fleurs sur les toits, élèvent insectes et poissons, distribuent des plantes exotiques, revalorisent des fruits et légumes, et développent des circuits courts entre producteurs et consommateurs urbains.
+Mon Organisation est la plus grande coopérative d'agriculture urbaine au monde : 20 entreprises réunies sous un même toit de 17 000 m² à Montréal, fonctionnant en économie circulaire. Vos employés plongeront dans le quotidien d'entrepreneur·e·s passionné·e·s qui produisent du cidre, du vin, des champignons, des légumes-feuilles et des fleurs sur les toits, élèvent insectes et poissons, distribuent des plantes exotiques, revalorisent des fruits et légumes, et développent des circuits courts entre producteurs et consommateurs urbains.
 
 Nos visites guidées privées durent entre 1h30 et 2h et comprennent un accueil et une présentation, la rencontre avec 1 à 3 membres selon vos intérêts, et la découverte des installations partagées : toit cultivé, composteur, chambre froide, cuisines collectives, et plus encore. Une dégustation de produits des membres peut également être ajoutée selon votre budget.
 
@@ -308,15 +308,15 @@ Seriez-vous disponible pour un bref échange cette semaine afin de voir si ça c
 
 Nora Azouz
 Responsable communications et événements
-La Centrale Agricole | nora@centrale.coop | centrale.coop`,
+Mon Organisation | contact@monorganisation.com | monorganisation.com`,
   },
   ecoles: {
-    subject: 'Visite éducative – La Centrale Agricole, agriculture urbaine et économie circulaire',
+    subject: 'Visite éducative – Mon Organisation, agriculture urbaine et économie circulaire',
     body: `Bonjour [Prénom],
 
 Je vous contacte pour vous présenter une visite éducative que nous croyons bien adaptée à votre programme.
 
-La Centrale Agricole est la plus grande coopérative d'agriculture urbaine au monde, située à Montréal : 20 entreprises réunies sous un même toit, fonctionnant en économie circulaire. Vos élèves ou étudiants peuvent y découvrir concrètement la production de cidre, de champignons, de légumes-feuilles, l'élevage d'insectes et de poissons, la revalorisation alimentaire, les circuits courts — avec des échanges directs avec les entrepreneur·e·s sur place.
+Mon Organisation est la plus grande coopérative d'agriculture urbaine au monde, située à Montréal : 20 entreprises réunies sous un même toit, fonctionnant en économie circulaire. Vos élèves ou étudiants peuvent y découvrir concrètement la production de cidre, de champignons, de légumes-feuilles, l'élevage d'insectes et de poissons, la revalorisation alimentaire, les circuits courts — avec des échanges directs avec les entrepreneur·e·s sur place.
 
 Nos visites guidées durent entre 1h30 et 2h et sont adaptées aux objectifs du groupe. Elles comprennent un accueil, la rencontre de 1 à 3 membres, et la découverte des installations partagées (toit cultivé, composteur, chambre froide, cuisines collectives). Une dégustation peut aussi être ajoutée.
 
@@ -326,24 +326,24 @@ Seriez-vous disponible pour un court échange afin de voir si une visite pourrai
 
 Nora Azouz
 Responsable communications et événements
-La Centrale Agricole | nora@centrale.coop | centrale.coop`,
+Mon Organisation | contact@monorganisation.com | monorganisation.com`,
   },
   institutions: {
-    subject: 'Partenariat – La Centrale Agricole, un lieu unique à découvrir',
+    subject: 'Partenariat – Mon Organisation, un lieu unique à découvrir',
     body: `Bonjour [Prénom],
 
-Je vous contacte pour explorer une opportunité de collaboration avec La Centrale Agricole.
+Je vous contacte pour explorer une opportunité de collaboration avec Mon Organisation.
 
-La Centrale est la plus grande coopérative d'agriculture urbaine au monde, située dans un bâtiment de 17 000 m² à Montréal. On y retrouve 20 entreprises qui produisent du cidre, du vin, des champignons, des légumes-feuilles et des fleurs sur les toits, élèvent insectes et poissons, distribuent des plantes exotiques, revalorisent des fruits et légumes, et développent des circuits courts — le tout en économie circulaire.
+Mon Organisation est la plus grande coopérative d'agriculture urbaine au monde, située dans un bâtiment de 17 000 m² à Montréal. On y retrouve 20 entreprises qui produisent du cidre, du vin, des champignons, des légumes-feuilles et des fleurs sur les toits, élèvent insectes et poissons, distribuent des plantes exotiques, revalorisent des fruits et légumes, et développent des circuits courts — le tout en économie circulaire.
 
 Nous accueillons des groupes pour des visites guidées immersives de 1h30 à 2h — entreprises, écoles, institutions, délégations — avec rencontre des membres et découverte des installations : toit cultivé, composteur, chambre froide, cuisines collectives.
 
-Nous aimerions discuter de comment La Centrale pourrait s'intégrer à votre offre ou à vos recommandations.
+Nous aimerions discuter de comment Mon Organisation pourrait s'intégrer à votre offre ou à vos recommandations.
 
 Je serais ravie de vous organiser une visite des installations à votre convenance.
 
 Nora Azouz
 Responsable communications et événements
-La Centrale Agricole | nora@centrale.coop | centrale.coop`,
+Mon Organisation | contact@monorganisation.com | monorganisation.com`,
   },
 };

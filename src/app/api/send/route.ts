@@ -40,16 +40,16 @@ export async function POST(request: NextRequest) {
 
     // Use RESEND_FROM_EMAIL env var when the domain is verified in Resend.
     // Until then, falls back to onboarding@resend.dev (Resend test address).
-    // To unlock: verify centrale.coop in Resend → set RESEND_FROM_EMAIL=nora@centrale.coop
+    // To unlock: verify monorganisation.com in Resend → set RESEND_FROM_EMAIL=contact@monorganisation.com
     const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
-    const fromField = senderName ? `${senderName} <${fromEmail}>` : `La Centrale Agricole <${fromEmail}>`;
+    const fromField = senderName ? `${senderName} <${fromEmail}>` : `Mon Organisation <${fromEmail}>`;
 
     const { data, error } = await resend.emails.send({
       from: fromField,
       to: [actualTo],
       subject: actualSubject,
       html: htmlBody,
-      replyTo: senderEmail || 'nora@centrale.coop',
+      replyTo: senderEmail || 'contact@monorganisation.com',
     });
 
     if (error) {

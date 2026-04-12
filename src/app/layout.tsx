@@ -10,8 +10,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "La Centrale Agricole — CRM Outreach",
-  description: "Outil d'outreach automatisé pour La Centrale Agricole, la plus grande coopérative d'agriculture urbaine au monde.",
+  title: "Mon Organisation — CRM Outreach",
+  description: "Outil d'outreach automatisé pour Mon Organisation, la plus grande coopérative d'agriculture urbaine au monde.",
 };
 
 export default function RootLayout({

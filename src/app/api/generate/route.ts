@@ -22,7 +22,7 @@ Exemples de contexte et d'angle pour les écoles:
 
   institutions: `
 Exemples de contexte et d'angle pour les institutions et médias:
-- La Centrale est un lieu de presse unique : 20 entreprises, une seule adresse, économie circulaire visible à l'œil nu.
+- Mon Organisation est un lieu de presse unique : 20 entreprises, une seule adresse, économie circulaire visible à l'œil nu.
 - Angle médias : dossier agriculture urbaine, alimentation de proximité, innovation québécoise, coopératives.
 - Angle tourisme : destination incontournable pour les délégations, les voyageurs d'affaires et les touristes curieux.
 - Angle agences événementielles : lieu atypique pour événements corporatifs ou de réseautage.
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
 
     const ai = new GoogleGenAI({ apiKey });
 
-    const visitLink = websiteUrl || 'https://centrale.coop/les-visites/';
+    const visitLink = websiteUrl || 'https://monorganisation.com/les-visites/';
     const formLink = bookingLink || 'https://docs.google.com/forms/d/e/1FAIpQLSdxra3cCffMxZMlEVXF1f-V4D69zd5PsqhNh--B-XKGyhtLNQ/viewform?usp=header';
     const caseStudy = CASE_STUDIES[audienceType] || CASE_STUDIES['corporatif'];
 
@@ -73,17 +73,17 @@ export async function POST(request: NextRequest) {
       ? `\nMots-clés à intégrer naturellement dans le message : ${keywords}`
       : '';
 
-    const prompt = `Tu es une rédactrice professionnelle travaillant pour La Centrale Agricole, la plus grande coopérative d'agriculture urbaine au monde, située à Montréal. Tu rédiges des messages d'outreach personnalisés en français québécois professionnel.
+    const prompt = `Tu es une rédactrice professionnelle travaillant pour Mon Organisation, la plus grande coopérative d'agriculture urbaine au monde, située à Montréal. Tu rédiges des messages d'outreach personnalisés en français québécois professionnel.
 
 Règles:
 - Ton chaleureux mais professionnel
 - Utilise le vouvoiement
 - Personnalise en fonction du titre et de l'organisation du contact
 - Limite le message email à 150-200 mots, le message LinkedIn à 100 mots max
-- Inclus une signature de Nora Azouz, Responsable communications et événements, La Centrale Agricole | nora@centrale.coop | centrale.coop
+- Inclus une signature de Nora Azouz, Responsable communications et événements, Mon Organisation | contact@monorganisation.com | monorganisation.com
 - Ne mets PAS de crochets ou de placeholders — utilise les vraies infos du contact
 - N'utilise AUCUN emoji dans le message email ni dans le message LinkedIn
-- Inclus naturellement le lien du site web (centrale.coop/les-visites/) dans le corps du message
+- Inclus naturellement le lien du site web (monorganisation.com/les-visites/) dans le corps du message
 - Termine toujours l'email avec un appel à l'action vers le formulaire de réservation fourni
 - Ajoute une ligne de désinscription CASL discrète à la fin : "Si vous ne souhaitez plus recevoir de communications, répondez à ce courriel."
 
@@ -94,7 +94,7 @@ Titre: ${contactTitle || 'Professionnel'}
 Organisation: ${contactOrg || 'Organisation'}
 Type d'audience: ${audienceType || 'corporatif'}
 
-Contexte sur La Centrale Agricole:
+Contexte sur Mon Organisation:
 - Plus grande coopérative d'agriculture urbaine au monde
 - 20 entreprises sous un même toit de 17 000 m² à Montréal
 - Économie circulaire : cidre, vin, champignons, légumes-feuilles, fleurs sur les toits, élevage d'insectes et poissons, plantes exotiques, revalorisation alimentaire, circuits courts
@@ -147,7 +147,7 @@ IMPORTANT: Réponds UNIQUEMENT avec un objet JSON valide, sans markdown, sans ba
     const finalBody = bodyAlreadyHasForm ? generatedBody : generatedBody + '\n' + ctaBlock;
 
     return Response.json({
-      subject: generated.subject || 'Visite – La Centrale Agricole',
+      subject: generated.subject || 'Visite – Mon Organisation',
       body: finalBody,
       linkedin: generated.linkedin || '',
     });

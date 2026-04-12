@@ -349,7 +349,7 @@ export default function BookingsPage() {
               <p className="pt-1 font-semibold text-green-700">Revenu estimé : {fmtCurrency(computeRevenue(acceptTarget))}</p>
             </div>
             <p className="text-xs text-slate-400 mb-4">
-              Un courriel de confirmation sera envoyé avec l&apos;adresse, la date, et le lien vers centrale.coop/les-visites/
+              Un courriel de confirmation sera envoyé avec l&apos;adresse, la date, et le lien vers monorganisation.com/les-visites/
             </p>
             <div className="flex gap-3">
               <button

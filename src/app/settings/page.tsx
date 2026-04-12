@@ -153,13 +153,13 @@ export default function SettingsPage() {
                 </p>
               </div>
               <p className="text-xs text-amber-700">
-                Jusqu&apos;à ce que <strong>centrale.coop</strong> soit vérifié dans Resend, les destinataires voient l&apos;adresse de test. Les réponses arrivent quand même à <strong>{formState.senderEmail}</strong> grâce au reply-to.
+                Jusqu&apos;à ce que <strong>monorganisation.com</strong> soit vérifié dans Resend, les destinataires voient l&apos;adresse de test. Les réponses arrivent quand même à <strong>{formState.senderEmail}</strong> grâce au reply-to.
               </p>
               <div>
                 <p className="text-xs font-semibold text-amber-800 mb-2">Pour envoyer depuis {formState.senderEmail} :</p>
                 <ol className="text-xs text-amber-700 space-y-1.5 list-decimal list-inside">
                   <li>Connectez-vous à <strong>resend.com</strong> → Domains → <em>Add Domain</em></li>
-                  <li>Entrez <strong>centrale.coop</strong> et ajoutez les enregistrements DNS fournis</li>
+                  <li>Entrez <strong>monorganisation.com</strong> et ajoutez les enregistrements DNS fournis</li>
                   <li>Cliquez <em>Verify</em> — la vérification prend 1 à 24 h</li>
                   <li>
                     Dans votre fichier <code className="bg-amber-100 px-1 rounded">.env.local</code>, ajoutez :

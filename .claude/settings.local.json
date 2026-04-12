@@ -9,7 +9,8 @@
       "Bash(taskkill /F /IM node.exe)",
       "Bash(taskkill /PID 22888 /F)",
       "Bash(taskkill //PID 22888 //F)",
-      "Bash(taskkill //F //IM node.exe)"
+      "Bash(taskkill //F //IM node.exe)",
+      "Bash(xargs sed:*)"
     ]
   }
 }

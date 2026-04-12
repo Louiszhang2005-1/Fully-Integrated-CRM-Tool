@@ -85,13 +85,13 @@ function generateFallbackMessage(
   );
   const linkedinMsg = `Bonjour ${firstName},
 
-La Centrale Agricole est la plus grande coopérative d'agriculture urbaine au monde — 20 entreprises sous un même toit à Montréal. Nos visites guidées de 1h30 à 2h vous feront découvrir cidre, champignons, toits cultivés, insectes, poissons et bien plus.
+Mon Organisation est la plus grande coopérative d'agriculture urbaine au monde — 20 entreprises sous un même toit à Montréal. Nos visites guidées de 1h30 à 2h vous feront découvrir cidre, champignons, toits cultivés, insectes, poissons et bien plus.
 
 En tant que ${title} chez ${org}, nous pensons que cette expérience vous serait très pertinente.
 
 Seriez-vous disponible pour un court échange ?
 
-Nora Azouz — La Centrale Agricole | nora@centrale.coop`;
+Nora Azouz — Mon Organisation | contact@monorganisation.com`;
 
   return { subject: template.subject, body: bodyWithOrg, linkedin: linkedinMsg };
 }
@@ -175,7 +175,7 @@ export default function LookupPage() {
           contactOrg: orgToUse,
           audienceType,
           template: template.body,
-          websiteUrl: 'https://centrale.coop/les-visites/',
+          websiteUrl: 'https://monorganisation.com/les-visites/',
           bookingLink: 'https://docs.google.com/forms/d/e/1FAIpQLSdxra3cCffMxZMlEVXF1f-V4D69zd5PsqhNh--B-XKGyhtLNQ/viewform?usp=header',
         }),
       });
