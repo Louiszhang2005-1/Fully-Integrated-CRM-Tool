@@ -17,7 +17,7 @@ export const SEED_CONTACTS: Omit<Contact, 'id' | 'createdAt'>[] = [
     status: 'en_discussion',
     audienceType: 'corporatif',
     sentAt: d(1),
-    lastAction: 'A répondu positivement, intéressée par une visite en mai',
+    lastAction: 'Responded positively, interested in a visit in May',
   },
   {
     fullName: 'Ève Giard',
@@ -38,7 +38,7 @@ export const SEED_CONTACTS: Omit<Contact, 'id' | 'createdAt'>[] = [
     status: 'confirme',
     audienceType: 'corporatif',
     sentAt: d(1),
-    lastAction: 'Visite confirmée pour le 18 avril, groupe de 22 personnes',
+    lastAction: 'Visit confirmed for April 18, group of 22 people',
   },
   {
     fullName: 'Charles Bernardi',
@@ -70,7 +70,7 @@ export const SEED_CONTACTS: Omit<Contact, 'id' | 'createdAt'>[] = [
     status: 'en_discussion',
     audienceType: 'corporatif',
     sentAt: d(2),
-    lastAction: 'Demande d\'informations sur les tarifs pour groupe de 30',
+    lastAction: 'Requested pricing information for a group of 30',
   },
   {
     fullName: 'Marie Lemire',
@@ -131,7 +131,7 @@ export const SEED_CONTACTS: Omit<Contact, 'id' | 'createdAt'>[] = [
     status: 'en_discussion',
     audienceType: 'ecoles',
     sentAt: d(4),
-    lastAction: 'Souhaite planifier une visite pour 35 élèves de secondaire 4',
+    lastAction: 'Wants to schedule a visit for 35 grade 10 students',
   },
   {
     fullName: 'Natalie Lacombe',
@@ -152,7 +152,7 @@ export const SEED_CONTACTS: Omit<Contact, 'id' | 'createdAt'>[] = [
     status: 'confirme',
     audienceType: 'ecoles',
     sentAt: d(2),
-    lastAction: 'Visite confirmée pour groupe de 28 étudiants MBA, 25 avril',
+    lastAction: 'Visit confirmed for group of 28 MBA students, April 25',
   },
   {
     fullName: 'Peter Garber',
@@ -212,7 +212,7 @@ export const SEED_CONTACTS: Omit<Contact, 'id' | 'createdAt'>[] = [
     status: 'en_discussion',
     audienceType: 'institutions',
     sentAt: d(3),
-    lastAction: 'Intéressée par un article sur Mon Organisation, demande plus de détails',
+    lastAction: 'Interested in an article about Mon Organisation, requesting more details',
   },
   {
     fullName: 'Ariane Desrochers',
@@ -277,7 +277,7 @@ export const SEED_CONTACTS: Omit<Contact, 'id' | 'createdAt'>[] = [
     status: 'confirme',
     audienceType: 'institutions',
     sentAt: d(1),
-    notes: 'Partenaire existant — visite de délégation confirmée le 10 avril',
+    notes: 'Existing partner — delegation visit confirmed for April 10',
   },
   {
     fullName: 'Gilbert Samaha',
@@ -287,63 +287,63 @@ export const SEED_CONTACTS: Omit<Contact, 'id' | 'createdAt'>[] = [
     status: 'confirme',
     audienceType: 'institutions',
     sentAt: d(2),
-    notes: 'Partenaire existant',
+    notes: 'Existing partner',
   },
 ];
 
 export const DEFAULT_TEMPLATES: Record<AudienceType, { subject: string; body: string }> = {
   corporatif: {
-    subject: 'Visite privée – Mon Organisation, la plus grande coopérative d\'agriculture urbaine au monde',
-    body: `Bonjour [Prénom],
+    subject: 'Private Group Visit – Mon Organisation, the World\'s Largest Urban Agriculture Cooperative',
+    body: `Hello [FirstName],
 
-Je me permets de vous écrire au sujet d'une visite de groupe que nous croyons très pertinente pour votre équipe.
+I am reaching out about a group visit experience we believe would be highly relevant for your team.
 
-Mon Organisation est la plus grande coopérative d'agriculture urbaine au monde : 20 entreprises réunies sous un même toit de 17 000 m² à Montréal, fonctionnant en économie circulaire. Vos employés plongeront dans le quotidien d'entrepreneur·e·s passionné·e·s qui produisent du cidre, du vin, des champignons, des légumes-feuilles et des fleurs sur les toits, élèvent insectes et poissons, distribuent des plantes exotiques, revalorisent des fruits et légumes, et développent des circuits courts entre producteurs et consommateurs urbains.
+Mon Organisation is the world's largest urban agriculture cooperative: 20 businesses under one 17,000 m² roof in Montreal, operating in a circular economy. Your employees will immerse themselves in the daily life of passionate entrepreneurs producing cider, wine, mushrooms, leafy greens and rooftop flowers, raising insects and fish, distributing exotic plants, repurposing surplus produce, and building short supply chains between urban producers and consumers.
 
-Nos visites guidées privées durent entre 1h30 et 2h et comprennent un accueil et une présentation, la rencontre avec 1 à 3 membres selon vos intérêts, et la découverte des installations partagées : toit cultivé, composteur, chambre froide, cuisines collectives, et plus encore. Une dégustation de produits des membres peut également être ajoutée selon votre budget.
+Our private guided tours last 1.5 to 2 hours and include a welcome presentation, meetings with 1 to 3 member businesses based on your interests, and a tour of shared facilities: rooftop farm, composter, cold room, shared kitchens, and more. A tasting of member products can also be added depending on your budget.
 
-Tarif : 450 $ + taxes pour un groupe de 20 personnes maximum (22,50 $ + taxes par personne supplémentaire).
+Pricing: $450 + tax for a group of up to 20 people ($22.50 + tax per additional person).
 
-Seriez-vous disponible pour un bref échange cette semaine afin de voir si ça correspond à vos besoins ?
+Would you be available for a brief call this week to see if this fits your needs?
 
 Nora Azouz
-Responsable communications et événements
+Communications & Events Manager
 Mon Organisation | contact@monorganisation.com | monorganisation.com`,
   },
   ecoles: {
-    subject: 'Visite éducative – Mon Organisation, agriculture urbaine et économie circulaire',
-    body: `Bonjour [Prénom],
+    subject: 'Educational Visit – Mon Organisation, Urban Agriculture and Circular Economy',
+    body: `Hello [FirstName],
 
-Je vous contacte pour vous présenter une visite éducative que nous croyons bien adaptée à votre programme.
+I am reaching out to present an educational visit we believe would be a great fit for your program.
 
-Mon Organisation est la plus grande coopérative d'agriculture urbaine au monde, située à Montréal : 20 entreprises réunies sous un même toit, fonctionnant en économie circulaire. Vos élèves ou étudiants peuvent y découvrir concrètement la production de cidre, de champignons, de légumes-feuilles, l'élevage d'insectes et de poissons, la revalorisation alimentaire, les circuits courts — avec des échanges directs avec les entrepreneur·e·s sur place.
+Mon Organisation is the world's largest urban agriculture cooperative, located in Montreal: 20 businesses under one roof, operating in a circular economy. Your students can discover firsthand the production of cider, mushrooms, and leafy greens, insect and fish farming, food repurposing, short supply chains — with direct exchanges with the entrepreneurs on site.
 
-Nos visites guidées durent entre 1h30 et 2h et sont adaptées aux objectifs du groupe. Elles comprennent un accueil, la rencontre de 1 à 3 membres, et la découverte des installations partagées (toit cultivé, composteur, chambre froide, cuisines collectives). Une dégustation peut aussi être ajoutée.
+Our guided tours last 1.5 to 2 hours and are tailored to your group's learning objectives. They include a welcome, meetings with 1 to 3 member businesses, and a tour of shared facilities (rooftop farm, composter, cold room, shared kitchens). A tasting can also be added.
 
-Tarif pour groupes scolaires ou OBNL : 300 $ + taxes (jusqu'à 20 personnes), 15 $ + taxes par personne supplémentaire.
+Pricing for school or non-profit groups: $300 + tax (up to 20 people), $15 + tax per additional person.
 
-Seriez-vous disponible pour un court échange afin de voir si une visite pourrait s'intégrer à votre calendrier ?
+Would you be available for a brief call to see if a visit could fit into your calendar?
 
 Nora Azouz
-Responsable communications et événements
+Communications & Events Manager
 Mon Organisation | contact@monorganisation.com | monorganisation.com`,
   },
   institutions: {
-    subject: 'Partenariat – Mon Organisation, un lieu unique à découvrir',
-    body: `Bonjour [Prénom],
+    subject: 'Partnership – Mon Organisation, a Unique Destination to Discover',
+    body: `Hello [FirstName],
 
-Je vous contacte pour explorer une opportunité de collaboration avec Mon Organisation.
+I am reaching out to explore a collaboration opportunity with Mon Organisation.
 
-Mon Organisation est la plus grande coopérative d'agriculture urbaine au monde, située dans un bâtiment de 17 000 m² à Montréal. On y retrouve 20 entreprises qui produisent du cidre, du vin, des champignons, des légumes-feuilles et des fleurs sur les toits, élèvent insectes et poissons, distribuent des plantes exotiques, revalorisent des fruits et légumes, et développent des circuits courts — le tout en économie circulaire.
+Mon Organisation is the world's largest urban agriculture cooperative, housed in a 17,000 m² building in Montreal. It brings together 20 businesses producing cider, wine, mushrooms, leafy greens and rooftop flowers, raising insects and fish, distributing exotic plants, repurposing surplus produce, and building short supply chains — all within a circular economy model.
 
-Nous accueillons des groupes pour des visites guidées immersives de 1h30 à 2h — entreprises, écoles, institutions, délégations — avec rencontre des membres et découverte des installations : toit cultivé, composteur, chambre froide, cuisines collectives.
+We welcome groups for immersive guided tours of 1.5 to 2 hours — corporate teams, schools, institutions, delegations — with meetings with member entrepreneurs and a tour of the facilities: rooftop farm, composter, cold room, shared kitchens.
 
-Nous aimerions discuter de comment Mon Organisation pourrait s'intégrer à votre offre ou à vos recommandations.
+We would love to discuss how Mon Organisation could integrate into your offerings or recommendations.
 
-Je serais ravie de vous organiser une visite des installations à votre convenance.
+I would be happy to organize a visit of the facilities at your convenience.
 
 Nora Azouz
-Responsable communications et événements
+Communications & Events Manager
 Mon Organisation | contact@monorganisation.com | monorganisation.com`,
   },
 };

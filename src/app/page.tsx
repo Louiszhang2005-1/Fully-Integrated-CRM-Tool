@@ -74,9 +74,9 @@ export default function DashboardPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Tableau de bord</h1>
+          <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
           <p className="text-sm text-slate-500 mt-1">
-            Vue d&apos;ensemble de vos campagnes d&apos;outreach
+            Overview of your outreach campaigns
           </p>
         </div>
         <Link href="/campaigns/new" className="btn btn-primary btn-lg">
@@ -84,7 +84,7 @@ export default function DashboardPage() {
             <line x1="12" y1="5" x2="12" y2="19" />
             <line x1="5" y1="12" x2="19" y2="12" />
           </svg>
-          Nouvelle campagne
+          New Campaign
         </Link>
       </div>
 
@@ -93,20 +93,20 @@ export default function DashboardPage() {
         <div className="stat-card">
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-              Envoyés ce mois
+              Sent this month
             </span>
             <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(45,106,46,0.1)', color: '#2D6A2E' }}>
               <IconMail />
             </div>
           </div>
           <p className="text-3xl font-bold text-slate-900">{stats.totalSentThisMonth}</p>
-          <p className="text-xs text-slate-400 mt-1">messages envoyés</p>
+          <p className="text-xs text-slate-400 mt-1">messages sent</p>
         </div>
 
         <div className="stat-card">
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-              Par courriel
+              By email
             </span>
             <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(59,130,246,0.1)', color: '#3b82f6' }}>
               <IconMail />
@@ -124,20 +124,20 @@ export default function DashboardPage() {
         <div className="stat-card">
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-              Taux de réponse
+              Response rate
             </span>
             <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(139,92,246,0.1)', color: '#8b5cf6' }}>
               <IconTrendUp />
             </div>
           </div>
           <p className="text-3xl font-bold text-slate-900">{stats.responseRate}%</p>
-          <p className="text-xs text-slate-400 mt-1">en discussion ou confirmés</p>
+          <p className="text-xs text-slate-400 mt-1">in discussion or confirmed</p>
         </div>
 
         <div className="stat-card">
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-              Campagnes actives
+              Active campaigns
             </span>
             <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(245,158,11,0.1)', color: '#f59e0b' }}>
               <IconZap />
@@ -145,28 +145,28 @@ export default function DashboardPage() {
           </div>
           <p className="text-3xl font-bold text-slate-900">{stats.activeCampaigns}</p>
           <p className="text-xs text-slate-400 mt-1">
-            {campaigns.length} campagnes au total
+            {campaigns.length} campaigns total
           </p>
         </div>
       </div>
 
       {/* Campaigns Grid */}
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold text-slate-800">Campagnes</h2>
-        <span className="text-sm text-slate-400">{campaigns.length} campagnes</span>
+        <h2 className="text-lg font-semibold text-slate-800">Campaigns</h2>
+        <span className="text-sm text-slate-400">{campaigns.length} campaigns</span>
       </div>
 
       {campaigns.length === 0 ? (
         <div className="empty-state card-elevated">
           <IconUsers />
           <h3 className="text-lg font-semibold text-slate-600 mb-2">
-            Aucune campagne
+            No campaigns
           </h3>
           <p className="text-sm text-slate-400 mb-4">
-            Créez votre première campagne d&apos;outreach pour commencer.
+            Create your first outreach campaign to get started.
           </p>
           <Link href="/campaigns/new" className="btn btn-primary">
-            Créer une campagne
+            Create a campaign
           </Link>
         </div>
       ) : (
@@ -203,8 +203,8 @@ export default function DashboardPage() {
                 {/* Progress bar */}
                 <div className="mb-3">
                   <div className="flex justify-between text-xs text-slate-500 mb-1">
-                    <span>{campaign.contactsSent} envoyés</span>
-                    <span>{campaign.contactLimit} limite</span>
+                    <span>{campaign.contactsSent} sent</span>
+                    <span>{campaign.contactLimit} limit</span>
                   </div>
                   <div className="progress-bar">
                     <div
@@ -250,18 +250,18 @@ export default function DashboardPage() {
                       disabled={isRunning}
                     >
                       <IconPlay />
-                      {campaign.contactsSent > 0 ? 'Reprendre' : 'Démarrer'}
+                      {campaign.contactsSent > 0 ? 'Resume' : 'Start'}
                     </button>
                   ) : (
                     <span className="btn btn-ghost btn-sm flex-1 cursor-default">
-                      ✅ Terminée
+                      ✅ Completed
                     </span>
                   )}
                   <Link
                     href={`/campaigns/${campaign.id}`}
                     className="btn btn-ghost btn-sm"
                   >
-                    Détails →
+                    Details →
                   </Link>
                 </div>
               </div>

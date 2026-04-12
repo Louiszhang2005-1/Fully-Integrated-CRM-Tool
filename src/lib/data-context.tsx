@@ -92,7 +92,7 @@ function initCampaigns(): Campaign[] {
   const demoCampaigns: Campaign[] = [
     {
       id: generateId(),
-      name: 'Visites corporatives Q1 2026',
+      name: 'Corporate Visits Q1 2026',
       audienceType: 'corporatif',
       status: 'active',
       contactLimit: 25,
@@ -105,7 +105,7 @@ function initCampaigns(): Campaign[] {
     },
     {
       id: generateId(),
-      name: 'Sorties scolaires printemps',
+      name: 'Spring School Outings',
       audienceType: 'ecoles',
       status: 'paused',
       contactLimit: 15,
@@ -118,7 +118,7 @@ function initCampaigns(): Campaign[] {
     },
     {
       id: generateId(),
-      name: 'Partenariats médias',
+      name: 'Media Partnerships',
       audienceType: 'institutions',
       status: 'completed',
       contactLimit: 10,
@@ -240,7 +240,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
         updatedAt: now,
       };
       setCampaigns((prev) => [campaign, ...prev]);
-      addToast('Campagne créée avec succès !', 'success');
+      addToast('Campaign created successfully!', 'success');
       return campaign;
     },
     [addToast]
@@ -255,7 +255,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const deleteCampaign = useCallback(
     (id: string) => {
       setCampaigns((prev) => prev.filter((c) => c.id !== id));
-      addToast('Campagne supprimée', 'info');
+      addToast('Campaign deleted', 'info');
     },
     [addToast]
   );
@@ -273,7 +273,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
         return next;
       });
       updateCampaign(id, { status: 'paused' });
-      addToast('Campagne mise en pause', 'info');
+      addToast('Campaign paused', 'info');
     },
     [updateCampaign, addToast]
   );
@@ -289,8 +289,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
       setRunningCampaigns((prev) => new Set(prev).add(id));
       addToast(
         isDemoMode
-          ? `🧪 Démo — aperçu envoyé à ${settings.demoEmail}`
-          : `Campagne "${campaign.name}" démarrée`,
+          ? `🧪 Demo — preview sent to ${settings.demoEmail}`
+          : `Campaign "${campaign.name}" started`,
         isDemoMode ? 'info' : 'success'
       );
 
@@ -311,7 +311,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
         const existingLinkedins = new Set(contacts.map((c) => c.linkedinUrl).filter(Boolean));
         const existingEmails = new Set(contacts.map((c) => c.email).filter(Boolean));
 
-        addToast(`🔍 Découverte de contacts via Apollo (${needed} nécessaires)…`, 'info');
+        addToast(`🔍 Discovering contacts via Apollo (${needed} needed)…`, 'info');
 
         for (let page = 1; page <= pages && availableContacts.length < campaign.contactLimit; page++) {
           try {
@@ -324,7 +324,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
             if (!discoverRes.ok) {
               const err = await discoverRes.json().catch(() => ({}));
               if (err.error === 'plan_limit') {
-                addToast('⚠️ Plan Apollo insuffisant pour la découverte automatique', 'error');
+                addToast('⚠️ Apollo plan insufficient for auto-discovery', 'error');
               }
               break;
             }
@@ -356,7 +356,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
               }
 
               const newContact = createContact({
-                fullName: dc.name || `${dc.firstName} ${dc.lastName}`.trim() || 'Contact inconnu',
+                fullName: dc.name || `${dc.firstName} ${dc.lastName}`.trim() || 'Unknown Contact',
                 organization: dc.organization || '',
                 title: dc.title || '',
                 email: resolvedEmail,
@@ -383,7 +383,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
                   linkedinUrl: newContact.linkedinUrl,
                   audienceType: newContact.audienceType,
                   channel: newContact.channel,
-                  status: 'À contacter',
+                  status: 'To Contact',
                 }),
               }).catch(() => { /* non-fatal */ });
             }
@@ -393,7 +393,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
           }
         }
 
-        addToast(`✅ ${availableContacts.length} contacts prêts pour l'envoi`, 'success');
+        addToast(`✅ ${availableContacts.length} contacts ready to send`, 'success');
       }
 
       const template = DEFAULT_TEMPLATES[campaign.audienceType];
@@ -478,11 +478,11 @@ export function DataProvider({ children }: { children: ReactNode }) {
             if (isDemoMode) {
               // Demo: don't mark contact as sent, don't touch Sheets
               addToast(
-                `🧪 Aperçu envoyé à ${settings.demoEmail} (pour: ${contact.fullName} · ${contact.organization})`,
+                `🧪 Preview sent to ${settings.demoEmail} (for: ${contact.fullName} · ${contact.organization})`,
                 'info'
               );
             } else {
-              const channelLabel = contact.channel === 'email' ? 'courriel' : 'LinkedIn (manuel)';
+              const channelLabel = contact.channel === 'email' ? 'email' : 'LinkedIn (manual)';
               const sentAt = new Date().toISOString();
               setContacts((prev) =>
                 prev.map((c) =>
@@ -492,7 +492,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
                         campaignId: id,
                         status: 'envoye' as ContactStatus,
                         sentAt,
-                        lastAction: `Envoyé via ${channelLabel}: ${subject}`,
+                        lastAction: `Sent via ${channelLabel}: ${subject}`,
                       }
                     : c
                 )
@@ -524,23 +524,23 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
               addToast(
                 contact.channel === 'email'
-                  ? `✉️ Courriel envoyé à ${contact.fullName} (${contact.organization})`
-                  : `💼 ${contact.fullName} marqué pour envoi LinkedIn manuel`,
+                  ? `✉️ Email sent to ${contact.fullName} (${contact.organization})`
+                  : `💼 ${contact.fullName} queued for manual LinkedIn outreach`,
                 'success'
               );
             }
           } else {
-            addToast(`⚠️ Échec d'envoi pour ${contact.fullName} — ignoré`, 'error');
+            addToast(`⚠️ Send failed for ${contact.fullName} — skipped`, 'error');
           }
         } catch (err) {
           console.error('Campaign send error for', contact.fullName, err);
-          addToast(`⚠️ Erreur pour ${contact.fullName} — ignoré`, 'error');
+          addToast(`⚠️ Error for ${contact.fullName} — skipped`, 'error');
         }
       }
 
       if (sent >= campaign.contactLimit) {
         updateCampaign(id, { status: 'completed', contactsSent: sent });
-        addToast(`🎉 Campagne "${campaign.name}" terminée !`, 'success');
+        addToast(`🎉 Campaign "${campaign.name}" completed!`, 'success');
       }
 
       setRunningCampaigns((prev) => {
@@ -582,7 +582,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const updateSettings = useCallback(
     (data: Partial<Settings>) => {
       setSettings((prev) => ({ ...prev, ...data }));
-      addToast('Paramètres sauvegardés', 'success');
+      addToast('Settings saved', 'success');
     },
     [addToast]
   );

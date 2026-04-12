@@ -13,16 +13,16 @@ function getAuth() {
 }
 
 const VISIT_TYPE_LABELS: Record<string, string> = {
-  alimentaire: 'Système alimentaire',
-  agriculture_urbaine: 'Agriculture urbaine',
-  economie_circulaire: 'Économie circulaire',
-  culinaire: 'Expérience culinaire',
+  alimentaire: 'Food System',
+  agriculture_urbaine: 'Urban Agriculture',
+  economie_circulaire: 'Circular Economy',
+  culinaire: 'Culinary Experience',
 };
 
 const GROUP_TYPE_LABELS: Record<string, string> = {
-  corporatif: 'Corporatif',
-  scolaire: 'Scolaire / OBNL',
-  institution: 'Institution / Média',
+  corporatif: 'Corporate',
+  scolaire: 'School / Non-profit',
+  institution: 'Institution / Media',
 };
 
 function buildAcceptHtml(booking: {
@@ -36,56 +36,56 @@ function buildAcceptHtml(booking: {
   const visitLabel = VISIT_TYPE_LABELS[booking.visitType] || booking.visitType;
   const groupLabel = GROUP_TYPE_LABELS[booking.groupType] || booking.groupType;
 
-  return `<p>Bonjour ${firstName},</p>
+  return `<p>Hello ${firstName},</p>
 
-<p>Nous avons le plaisir de confirmer votre réservation pour une visite à <strong>Mon Organisation</strong> !</p>
+<p>We are pleased to confirm your reservation for a visit to <strong>Mon Organisation</strong>!</p>
 
 <ul>
-  <li>📅 <strong>Date :</strong> ${booking.preferredDate}</li>
-  <li>👥 <strong>Groupe :</strong> ${booking.nbPeople} personnes (${groupLabel})</li>
-  <li>🌿 <strong>Type de visite :</strong> ${visitLabel}</li>
-  <li>📍 <strong>Adresse :</strong> 7070 Henri-Julien Ave, Montréal, QC H2S 3B5</li>
+  <li>📅 <strong>Date:</strong> ${booking.preferredDate}</li>
+  <li>👥 <strong>Group:</strong> ${booking.nbPeople} people (${groupLabel})</li>
+  <li>🌿 <strong>Visit type:</strong> ${visitLabel}</li>
+  <li>📍 <strong>Address:</strong> 7070 Henri-Julien Ave, Montreal, QC H2S 3B5</li>
 </ul>
 
-<p>Pour toute question, n'hésitez pas à nous écrire à <a href="mailto:contact@monorganisation.com">contact@monorganisation.com</a> ou à consulter notre page de visites : <a href="https://monorganisation.com/les-visites/">monorganisation.com/les-visites</a></p>
+<p>For any questions, feel free to reach us at <a href="mailto:contact@monorganisation.com">contact@monorganisation.com</a> or visit our visits page: <a href="https://monorganisation.com/les-visites/">monorganisation.com/les-visites</a></p>
 
-<p>Au plaisir de vous accueillir,</p>
+<p>Looking forward to welcoming you,</p>
 <p><strong>Nora Azouz</strong><br/>
-Responsable communications et événements<br/>
+Communications &amp; Events Manager<br/>
 Mon Organisation | <a href="mailto:contact@monorganisation.com">contact@monorganisation.com</a> | monorganisation.com</p>`;
 }
 
 function buildCancelHtml(booking: { fullName: string; preferredDate: string }, reason?: string): string {
   const firstName = booking.fullName.split(' ')[0];
 
-  return `<p>Bonjour ${firstName},</p>
+  return `<p>Hello ${firstName},</p>
 
-<p>Nous vous contactons au sujet de votre réservation à <strong>Mon Organisation</strong> prévue le ${booking.preferredDate}.</p>
+<p>We are contacting you regarding your reservation at <strong>Mon Organisation</strong> scheduled for ${booking.preferredDate}.</p>
 
-<p>Nous sommes dans l'obligation d'annuler cette visite.${reason ? ` ${reason}` : ''}</p>
+<p>We regret to inform you that we must cancel this visit.${reason ? ` ${reason}` : ''}</p>
 
-<p>Nous sommes sincèrement désolés pour ce désagrément. N'hésitez pas à nous recontacter pour planifier une nouvelle date — il nous fera plaisir de vous accueillir.</p>
+<p>We sincerely apologize for the inconvenience. Please do not hesitate to contact us to schedule a new date — we would be delighted to welcome you.</p>
 
-<p>Pour toute question, écrivez-nous à <a href="mailto:contact@monorganisation.com">contact@monorganisation.com</a>.</p>
+<p>For any questions, write to us at <a href="mailto:contact@monorganisation.com">contact@monorganisation.com</a>.</p>
 
 <p><strong>Nora Azouz</strong><br/>
-Responsable communications et événements<br/>
+Communications &amp; Events Manager<br/>
 Mon Organisation | <a href="mailto:contact@monorganisation.com">contact@monorganisation.com</a> | monorganisation.com</p>`;
 }
 
 function buildRefuseHtml(booking: { fullName: string }, reason?: string): string {
   const firstName = booking.fullName.split(' ')[0];
 
-  return `<p>Bonjour ${firstName},</p>
+  return `<p>Hello ${firstName},</p>
 
-<p>Merci pour votre intérêt envers <strong>Mon Organisation</strong>.</p>
+<p>Thank you for your interest in <strong>Mon Organisation</strong>.</p>
 
-<p>Malheureusement, nous ne sommes pas en mesure de confirmer votre visite pour la date demandée.${reason ? ` ${reason}` : ''}</p>
+<p>Unfortunately, we are unable to confirm your visit for the requested date.${reason ? ` ${reason}` : ''}</p>
 
-<p>N'hésitez pas à nous recontacter pour trouver une autre date disponible — nous serions ravis de vous accueillir.</p>
+<p>Please do not hesitate to contact us to find another available date — we would be happy to welcome you.</p>
 
 <p><strong>Nora Azouz</strong><br/>
-Responsable communications et événements<br/>
+Communications &amp; Events Manager<br/>
 Mon Organisation | <a href="mailto:contact@monorganisation.com">contact@monorganisation.com</a> | monorganisation.com</p>`;
 }
 
@@ -113,10 +113,10 @@ export async function POST(request: NextRequest) {
     const isAccept = action === 'accept';
     const isCancel = action === 'cancel';
     const subject = isAccept
-      ? `Confirmation de votre visite — Mon Organisation`
+      ? `Your visit is confirmed — Mon Organisation`
       : isCancel
-      ? `Annulation de votre visite — Mon Organisation`
-      : `Votre demande de visite — Mon Organisation`;
+      ? `Visit cancellation — Mon Organisation`
+      : `Your visit request — Mon Organisation`;
     const html = isAccept
       ? buildAcceptHtml(booking)
       : isCancel

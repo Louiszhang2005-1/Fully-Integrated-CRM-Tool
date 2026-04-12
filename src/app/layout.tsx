@@ -11,7 +11,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Mon Organisation — CRM Outreach",
-  description: "Outil d'outreach automatisé pour Mon Organisation, la plus grande coopérative d'agriculture urbaine au monde.",
+  description: "Automated outreach tool for Mon Organisation, the world's largest urban agriculture cooperative.",
 };
 
 export default function RootLayout({
@@ -20,7 +20,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" className={`${inter.variable} h-full antialiased`}>
+    <html lang="en" className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full">
         <DataProvider>
           <AppShell>{children}</AppShell>

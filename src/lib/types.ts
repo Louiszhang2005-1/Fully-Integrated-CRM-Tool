@@ -93,45 +93,45 @@ export interface BookingRequest {
 }
 
 export const VISIT_TYPE_LABELS: Record<VisitType, string> = {
-  alimentaire: 'Système alimentaire',
-  agriculture_urbaine: 'Agriculture urbaine',
-  economie_circulaire: 'Économie circulaire',
-  culinaire: 'Expérience culinaire',
+  alimentaire: 'Food System',
+  agriculture_urbaine: 'Urban Agriculture',
+  economie_circulaire: 'Circular Economy',
+  culinaire: 'Culinary Experience',
 };
 
 export const GROUP_TYPE_LABELS: Record<GroupType, string> = {
-  corporatif: 'Corporatif',
-  scolaire: 'Scolaire / OBNL',
-  institution: 'Institution / Média',
+  corporatif: 'Corporate',
+  scolaire: 'School / Non-profit',
+  institution: 'Institution / Media',
 };
 
 export const CULINARY_FORMULA_LABELS: Record<CulinaryFormula, string> = {
-  none: 'Aucune',
-  decouverte: 'Découverte (12$/pers)',
-  degustation: 'Dégustation (10$/pers)',
-  boite_lunch: 'Boîte à lunch (21$/pers)',
-  buffet: 'Buffet froid (30$/pers)',
-  cocktail: 'Cocktail dinatoire (47,50$/pers)',
+  none: 'None',
+  decouverte: 'Discovery ($12/person)',
+  degustation: 'Tasting ($10/person)',
+  boite_lunch: 'Lunch Box ($21/person)',
+  buffet: 'Cold Buffet ($30/person)',
+  cocktail: 'Cocktail Dinner ($47.50/person)',
 };
 
 export const AUDIENCE_LABELS: Record<AudienceType, string> = {
-  corporatif: 'Corporatif',
-  ecoles: 'Écoles',
-  institutions: 'Institutions & Médias',
+  corporatif: 'Corporate',
+  ecoles: 'Schools',
+  institutions: 'Institutions & Media',
 };
 
 export const STATUS_LABELS: Record<ContactStatus, string> = {
-  a_contacter: 'À contacter',
-  envoye: 'Envoyé',
-  en_discussion: 'En discussion',
-  confirme: 'Confirmé',
-  refuse: 'Refusé',
-  ne_pas_contacter: 'Ne pas contacter',
+  a_contacter: 'To Contact',
+  envoye: 'Sent',
+  en_discussion: 'In Discussion',
+  confirme: 'Confirmed',
+  refuse: 'Refused',
+  ne_pas_contacter: 'Do Not Contact',
 };
 
 export const CAMPAIGN_STATUS_LABELS: Record<CampaignStatus, string> = {
   active: 'Active',
-  paused: 'En pause',
-  completed: 'Terminée',
-  draft: 'Brouillon',
+  paused: 'On Hold',
+  completed: 'Completed',
+  draft: 'Draft',
 };

@@ -103,13 +103,13 @@ function IconLeaf() {
 }
 
 const NAV_ITEMS = [
-  { href: '/', label: 'Tableau de bord', icon: IconDashboard },
-  { href: '/campaigns/new', label: 'Nouvelle campagne', icon: IconPlus },
-  { href: '/discover', label: 'Découvrir contacts', icon: IconDiscover },
-  { href: '/lookup', label: 'Recherche contact', icon: IconSearch },
+  { href: '/', label: 'Dashboard', icon: IconDashboard },
+  { href: '/campaigns/new', label: 'New Campaign', icon: IconPlus },
+  { href: '/discover', label: 'Discover Contacts', icon: IconDiscover },
+  { href: '/lookup', label: 'Contact Lookup', icon: IconSearch },
   { href: '/contacts', label: 'Contacts', icon: IconContacts },
-  { href: '/bookings', label: 'Réservations', icon: IconCalendar },
-  { href: '/settings', label: 'Paramètres', icon: IconSettings },
+  { href: '/bookings', label: 'Reservations', icon: IconCalendar },
+  { href: '/settings', label: 'Settings', icon: IconSettings },
 ];
 
 export default function AppShell({ children }: { children: ReactNode }) {
@@ -166,7 +166,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
           {/* Campaigns section in sidebar */}
           <div className="mt-8">
             <p className="text-xs uppercase tracking-wider text-white/30 font-semibold mb-3 px-3">
-              Campagnes
+              Campaigns
             </p>
             <Link
               href="/campaigns/new"
@@ -174,7 +174,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
               onClick={() => setSidebarOpen(false)}
             >
               <IconCampaign />
-              Voir les campagnes
+              View Campaigns
             </Link>
           </div>
         </div>
@@ -182,11 +182,11 @@ export default function AppShell({ children }: { children: ReactNode }) {
         {/* Bottom stats */}
         <div className="absolute bottom-0 left-0 right-0 p-5 border-t border-white/10">
           <div className="flex items-center justify-between text-xs text-white/40">
-            <span>Envoyés ce mois</span>
+            <span>Sent this month</span>
             <span className="text-white/80 font-semibold">{stats.totalSentThisMonth}</span>
           </div>
           <div className="flex items-center justify-between text-xs text-white/40 mt-1">
-            <span>Campagnes actives</span>
+            <span>Active campaigns</span>
             <span className="text-white/80 font-semibold">{stats.activeCampaigns}</span>
           </div>
         </div>

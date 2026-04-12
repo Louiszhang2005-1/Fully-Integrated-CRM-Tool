@@ -38,10 +38,10 @@ export default function CampaignDetailPage() {
   if (!campaign) {
     return (
       <div className="animate-fade-in text-center py-20">
-        <h2 className="text-xl font-semibold text-slate-600 mb-2">Campagne introuvable</h2>
-        <p className="text-slate-400 mb-4">Cette campagne n&apos;existe pas ou a été supprimée.</p>
+        <h2 className="text-xl font-semibold text-slate-600 mb-2">Campaign not found</h2>
+        <p className="text-slate-400 mb-4">This campaign does not exist or has been deleted.</p>
         <button className="btn btn-primary" onClick={() => router.push('/')}>
-          Retour au tableau de bord
+          Back to dashboard
         </button>
       </div>
     );
@@ -53,7 +53,7 @@ export default function CampaignDetailPage() {
     : 0;
 
   const handleDelete = () => {
-    if (confirm('Êtes-vous sûr de vouloir supprimer cette campagne ?')) {
+    if (confirm('Are you sure you want to delete this campaign?')) {
       deleteCampaign(campaign.id);
       router.push('/');
     }
@@ -63,7 +63,7 @@ export default function CampaignDetailPage() {
     <div className="animate-fade-in">
       {/* Back button */}
       <button onClick={() => router.push('/')} className="btn btn-ghost btn-sm mb-4">
-        ← Retour
+        ← Back
       </button>
 
       {/* Demo mode banner */}
@@ -71,9 +71,9 @@ export default function CampaignDetailPage() {
         <div className="mb-4 px-4 py-3 rounded-xl bg-amber-50 border border-amber-300 flex items-center gap-3">
           <span className="text-lg">🧪</span>
           <div>
-            <p className="text-sm font-semibold text-amber-800">Mode démo actif</p>
+            <p className="text-sm font-semibold text-amber-800">Demo mode active</p>
             <p className="text-xs text-amber-700">
-              Les aperçus seront envoyés à <strong>{settings.demoEmail}</strong> — aucun contact réel ne sera contacté. Désactivez dans Paramètres pour envoyer pour vrai.
+              Previews will be sent to <strong>{settings.demoEmail}</strong> — no real contacts will be reached. Disable in Settings to send for real.
             </p>
           </div>
         </div>
@@ -108,16 +108,16 @@ export default function CampaignDetailPage() {
             {campaign.status === 'active' || isRunning ? (
               <button className="btn btn-secondary" onClick={() => pauseCampaign(campaign.id)}>
                 <IconPause />
-                Mettre en pause
+                Pause
               </button>
             ) : campaign.status !== 'completed' ? (
               <button className="btn btn-primary" onClick={() => runCampaign(campaign.id)} disabled={isRunning}>
                 <IconPlay />
-                {campaign.contactsSent > 0 ? 'Reprendre' : 'Démarrer'}
+                {campaign.contactsSent > 0 ? 'Resume' : 'Start'}
               </button>
             ) : null}
             <button className="btn btn-danger btn-sm" onClick={handleDelete}>
-              Supprimer
+              Delete
             </button>
           </div>
         </div>
@@ -125,7 +125,7 @@ export default function CampaignDetailPage() {
         {/* Progress */}
         <div className="mt-6">
           <div className="flex justify-between text-sm text-slate-500 mb-2">
-            <span>Progression</span>
+            <span>Progress</span>
             <span className="font-semibold">{campaign.contactsSent} / {campaign.contactLimit} contacts</span>
           </div>
           <div className="progress-bar" style={{ height: '12px' }}>
@@ -140,7 +140,7 @@ export default function CampaignDetailPage() {
             />
           </div>
           <p className="text-xs text-slate-400 mt-2">
-            {progress}% complété · {availableContacts.length} contacts disponibles restants
+            {progress}% completed · {availableContacts.length} available contacts remaining
           </p>
         </div>
       </div>
@@ -160,16 +160,16 @@ export default function CampaignDetailPage() {
                 <dd className="text-slate-700 font-medium">{AUDIENCE_LABELS[campaign.audienceType]}</dd>
               </div>
               <div>
-                <dt className="text-slate-400">Limite</dt>
+                <dt className="text-slate-400">Limit</dt>
                 <dd className="text-slate-700 font-medium">{campaign.contactLimit} contacts</dd>
               </div>
               <div>
-                <dt className="text-slate-400">Géographie</dt>
+                <dt className="text-slate-400">Geography</dt>
                 <dd className="text-slate-700 font-medium">{campaign.geography || '—'}</dd>
               </div>
               {campaign.bookingLink && (
                 <div>
-                  <dt className="text-slate-400">Lien de réservation</dt>
+                  <dt className="text-slate-400">Booking link</dt>
                   <dd>
                     <a href={campaign.bookingLink} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline text-xs break-all">
                       {campaign.bookingLink}
@@ -180,9 +180,9 @@ export default function CampaignDetailPage() {
             </dl>
             {campaign.autoDiscover && (
               <div className="mt-4 p-3 rounded-lg bg-blue-50 border border-blue-100">
-                <p className="text-xs text-blue-700 font-medium mb-0.5">🔍 Découverte automatique activée</p>
+                <p className="text-xs text-blue-700 font-medium mb-0.5">🔍 Auto-discovery enabled</p>
                 <p className="text-xs text-blue-600">
-                  La campagne cherchera des contacts via Apollo si la liste est insuffisante, enrichira leurs courriels, puis enverra les messages automatiquement.
+                  The campaign will search for contacts via Apollo if the list is insufficient, enrich their emails, then send messages automatically.
                 </p>
               </div>
             )}
@@ -191,7 +191,7 @@ export default function CampaignDetailPage() {
           {/* AI Prompt preview */}
           <div className="card-elevated p-5">
             <h3 className="text-sm font-semibold text-slate-600 uppercase tracking-wider mb-3">
-              Modèle de message
+              Message Template
             </h3>
             <div className="text-xs text-slate-500 leading-relaxed whitespace-pre-wrap max-h-48 overflow-y-auto bg-slate-50 rounded-lg p-3">
               {campaign.aiPrompt?.substring(0, 300)}...
@@ -209,7 +209,7 @@ export default function CampaignDetailPage() {
               {isRunning && (
                 <span className="text-xs text-green-600 font-medium flex items-center gap-1">
                   <span className="inline-block w-2 h-2 rounded-full bg-green-500 animate-pulse-subtle" />
-                  Envoi en cours...
+                  Sending in progress...
                 </span>
               )}
             </div>
@@ -218,8 +218,8 @@ export default function CampaignDetailPage() {
               <div className="empty-state py-12">
                 <p className="text-sm text-slate-400">
                   {campaign.status === 'draft'
-                    ? 'Démarrez la campagne pour commencer l\'envoi'
-                    : 'Aucun contact encore envoyé'}
+                    ? 'Start the campaign to begin sending'
+                    : 'No contacts sent yet'}
                 </p>
               </div>
             ) : (
@@ -228,9 +228,9 @@ export default function CampaignDetailPage() {
                   <thead>
                     <tr>
                       <th>Contact</th>
-                      <th>Organisation</th>
-                      <th>Canal</th>
-                      <th>Statut</th>
+                      <th>Organization</th>
+                      <th>Channel</th>
+                      <th>Status</th>
                       <th>Date</th>
                     </tr>
                   </thead>
@@ -246,7 +246,7 @@ export default function CampaignDetailPage() {
                         <td className="text-slate-600">{contact.organization}</td>
                         <td>
                           <span className={`badge ${contact.channel === 'email' ? 'badge-envoye' : 'badge-en_discussion'}`}>
-                            {contact.channel === 'email' ? '📧 Courriel' : '💼 LinkedIn'}
+                            {contact.channel === 'email' ? '📧 Email' : '💼 LinkedIn'}
                           </span>
                         </td>
                         <td>

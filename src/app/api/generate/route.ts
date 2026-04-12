@@ -3,30 +3,30 @@ import { GoogleGenAI } from '@google/genai';
 
 const CASE_STUDIES: Record<string, string> = {
   corporatif: `
-Exemples de contexte et d'angle pour le corporatif:
-- Les entreprises qui ont visité témoignent d'un fort impact sur la cohésion d'équipe et les valeurs RSE/ESG.
-- Format idéal pour journée de team-building originale, hors des sentiers battus.
-- Plusieurs grandes entreprises québécoises (Desjardins, Hydro-Québec, Bell) ont intégré nos visites à leurs programmes d'engagement employé.
-- La visite dure 1h30 à 2h, se conclut optionnellement par une dégustation de produits locaux membres (cidre, champignons, kombucha, etc.).
-- Tarif : 450 $+tx pour 20 personnes, 22,50 $/pers supplémentaire.
-- Angle à adapter selon le titre : HR/Talents → bien-être et engagement employé ; Communications/RSE → vitrine ESG concrète ; Événementiel → expérience unique clé en main.`,
+Context and angles for corporate outreach:
+- Companies that have visited report a strong impact on team cohesion and ESG/CSR values.
+- An ideal format for an original team-building day, off the beaten path.
+- Several major Quebec companies (Desjardins, Hydro-Quebec, Bell) have integrated our visits into their employee engagement programs.
+- The visit lasts 1.5 to 2 hours, optionally concluding with a tasting of local member products (cider, mushrooms, kombucha, etc.).
+- Pricing: $450 + tax for 20 people, $22.50/person additional.
+- Angle to adapt by title: HR/Talent → employee wellness and engagement; Communications/ESG → concrete ESG showcase; Events → unique turnkey experience.`,
 
   ecoles: `
-Exemples de contexte et d'angle pour les écoles:
-- La visite est adaptée au niveau du groupe : primaire, secondaire, cégep, université.
-- Concepts abordés concrètement : alimentation locale, circuits courts, économie circulaire, production zéro-déchet.
-- Utilisée par des enseignants de sciences, géographie, développement durable et entrepreneuriat.
-- Plusieurs écoles et cégeps de Montréal l'ont intégrée à leurs sorties scolaires annuelles.
-- Tarif : 300 $+tx pour 20 personnes (groupes scolaires/OBNL), 15 $/élève supplémentaire.
-- Angle à adapter : enseignant/directeur → programme pédagogique, arrimage avec les compétences du curriculum ; université → développement durable, économie sociale, innovation alimentaire.`,
+Context and angles for school outreach:
+- The visit is adapted to the group level: elementary, secondary, CEGEP, university.
+- Concepts explored hands-on: local food systems, short supply chains, circular economy, zero-waste production.
+- Used by science, geography, sustainability, and entrepreneurship teachers.
+- Several Montreal schools and CEGEPs have integrated it into their annual field trips.
+- Pricing: $300 + tax for 20 people (school/non-profit groups), $15/student additional.
+- Angle to adapt: teacher/principal → pedagogical program, alignment with curriculum competencies; university → sustainability, social economy, food innovation.`,
 
   institutions: `
-Exemples de contexte et d'angle pour les institutions et médias:
-- Mon Organisation est un lieu de presse unique : 20 entreprises, une seule adresse, économie circulaire visible à l'œil nu.
-- Angle médias : dossier agriculture urbaine, alimentation de proximité, innovation québécoise, coopératives.
-- Angle tourisme : destination incontournable pour les délégations, les voyageurs d'affaires et les touristes curieux.
-- Angle agences événementielles : lieu atypique pour événements corporatifs ou de réseautage.
-- Une visite de presse peut être organisée à la convenance du journaliste ou de la rédaction.`,
+Context and angles for institutions and media outreach:
+- Mon Organisation is a unique press destination: 20 businesses, one address, circular economy visible at a glance.
+- Media angle: urban agriculture, local food, Quebec innovation, cooperatives.
+- Tourism angle: a must-see destination for delegations, business travelers, and curious tourists.
+- Event agency angle: an atypical venue for corporate or networking events.
+- A press visit can be arranged at the journalist's or editorial team's convenience.`,
 };
 
 export async function POST(request: NextRequest) {
@@ -62,57 +62,56 @@ export async function POST(request: NextRequest) {
     const caseStudy = CASE_STUDIES[audienceType] || CASE_STUDIES['corporatif'];
 
     const linksBlock = [
-      `- Site web & visites : ${visitLink}`,
-      `- Formulaire de réservation : ${formLink}`,
-      pdfUrl ? `- Guide PDF des visites : ${pdfUrl}` : null,
+      `- Website & visits: ${visitLink}`,
+      `- Booking form: ${formLink}`,
+      pdfUrl ? `- Visit guide PDF: ${pdfUrl}` : null,
     ]
       .filter(Boolean)
       .join('\n');
 
     const keywordsBlock = keywords
-      ? `\nMots-clés à intégrer naturellement dans le message : ${keywords}`
+      ? `\nKeywords to naturally integrate into the message: ${keywords}`
       : '';
 
-    const prompt = `Tu es une rédactrice professionnelle travaillant pour Mon Organisation, la plus grande coopérative d'agriculture urbaine au monde, située à Montréal. Tu rédiges des messages d'outreach personnalisés en français québécois professionnel.
+    const prompt = `You are a professional writer working for Mon Organisation, the world's largest urban agriculture cooperative, located in Montreal. You write personalized outreach messages in professional English.
 
-Règles:
-- Ton chaleureux mais professionnel
-- Utilise le vouvoiement
-- Personnalise en fonction du titre et de l'organisation du contact
-- Limite le message email à 150-200 mots, le message LinkedIn à 100 mots max
-- Inclus une signature de Nora Azouz, Responsable communications et événements, Mon Organisation | contact@monorganisation.com | monorganisation.com
-- Ne mets PAS de crochets ou de placeholders — utilise les vraies infos du contact
-- N'utilise AUCUN emoji dans le message email ni dans le message LinkedIn
-- Inclus naturellement le lien du site web (monorganisation.com/les-visites/) dans le corps du message
-- Termine toujours l'email avec un appel à l'action vers le formulaire de réservation fourni
-- Ajoute une ligne de désinscription CASL discrète à la fin : "Si vous ne souhaitez plus recevoir de communications, répondez à ce courriel."
+Rules:
+- Warm but professional tone
+- Personalize based on the contact's title and organization
+- Keep the email message to 150-200 words, the LinkedIn message to 100 words max
+- Include a signature from Nora Azouz, Communications & Events Manager, Mon Organisation | contact@monorganisation.com | monorganisation.com
+- Do NOT use brackets or placeholders — use the real contact information
+- Do NOT use ANY emoji in the email or LinkedIn message
+- Naturally include the website link (monorganisation.com/les-visites/) in the body
+- Always end the email with a call to action toward the provided booking form
+- Add a discreet CASL unsubscribe line at the end: "If you no longer wish to receive communications, please reply to this email."
 
-Génère un courriel personnalisé pour ce contact:
+Generate a personalized email for this contact:
 
-Nom: ${contactName}
-Titre: ${contactTitle || 'Professionnel'}
-Organisation: ${contactOrg || 'Organisation'}
-Type d'audience: ${audienceType || 'corporatif'}
+Name: ${contactName}
+Title: ${contactTitle || 'Professional'}
+Organization: ${contactOrg || 'Organization'}
+Audience type: ${audienceType || 'corporatif'}
 
-Contexte sur Mon Organisation:
-- Plus grande coopérative d'agriculture urbaine au monde
-- 20 entreprises sous un même toit de 17 000 m² à Montréal
-- Économie circulaire : cidre, vin, champignons, légumes-feuilles, fleurs sur les toits, élevage d'insectes et poissons, plantes exotiques, revalorisation alimentaire, circuits courts
-- Visites guidées de 1h30 à 2h : accueil, rencontre de 1 à 3 membres, installations partagées (toit cultivé, composteur, chambre froide, cuisines collectives)
-- Tarif corporatif : 450 $ + taxes (20 pers max), 22,50 $/personne supplémentaire
-- Tarif scolaire/OBNL : 300 $ + taxes (20 pers max), 15 $/personne supplémentaire
-- Expérience culinaire optionnelle : 3 bouchées (12$/pers), dégustation vin/cidre (10$/pers), boîte à lunch (20-22$), buffet froid (25-35$), cocktail dinatoire (45-50$)
+Context about Mon Organisation:
+- World's largest urban agriculture cooperative
+- 20 businesses under one 17,000 m² roof in Montreal
+- Circular economy: cider, wine, mushrooms, leafy greens, rooftop flowers, insect and fish farming, exotic plants, food repurposing, short supply chains
+- Guided tours 1.5 to 2 hours: welcome, meeting with 1 to 3 member businesses, shared facilities (rooftop farm, composter, cold room, shared kitchens)
+- Corporate pricing: $450 + tax (max 20 people), $22.50/person additional
+- School/non-profit pricing: $300 + tax (max 20 people), $15/person additional
+- Optional culinary experience: 3 bites ($12/person), wine/cider tasting ($10/person), lunch box ($20-22), cold buffet ($25-35), cocktail dinner ($45-50)
 ${caseStudy}
 
-Liens à inclure dans l'email:
+Links to include in the email:
 ${linksBlock}
 ${keywordsBlock}
 
-Modèle de base fourni (adapte-le, ne le copie pas textuellement):
-${template || 'Pas de modèle fourni'}
+Base template provided (adapt it, do not copy it verbatim):
+${template || 'No template provided'}
 
-IMPORTANT: Réponds UNIQUEMENT avec un objet JSON valide, sans markdown, sans backticks, exactement comme ceci:
-{"subject": "L'objet du courriel", "body": "Le corps du courriel complet", "linkedin": "Version plus courte pour LinkedIn (100 mots max)"}`;
+IMPORTANT: Reply ONLY with a valid JSON object, no markdown, no backticks, exactly like this:
+{"subject": "The email subject", "body": "The complete email body", "linkedin": "Shorter version for LinkedIn (100 words max)"}`;
 
     const response = await ai.models.generateContent({
       model: 'gemini-2.0-flash',
@@ -142,12 +141,12 @@ IMPORTANT: Réponds UNIQUEMENT avec un objet JSON valide, sans markdown, sans ba
     // Always inject the links at the end of the body so they appear
     // regardless of whether Gemini chose to include them.
     const generatedBody: string = generated.body || rawText;
-    const ctaBlock = `\nPour réserver votre visite, remplissez le formulaire ici : ${formLink}\n\nEn savoir plus sur nos visites : ${visitLink}`;
+    const ctaBlock = `\nTo book your visit, fill out the form here: ${formLink}\n\nLearn more about our visits: ${visitLink}`;
     const bodyAlreadyHasForm = generatedBody.includes('docs.google.com/forms') || generatedBody.includes(formLink);
     const finalBody = bodyAlreadyHasForm ? generatedBody : generatedBody + '\n' + ctaBlock;
 
     return Response.json({
-      subject: generated.subject || 'Visite – Mon Organisation',
+      subject: generated.subject || 'Visit – Mon Organisation',
       body: finalBody,
       linkedin: generated.linkedin || '',
     });

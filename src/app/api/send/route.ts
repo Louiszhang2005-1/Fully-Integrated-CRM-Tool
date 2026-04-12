@@ -15,10 +15,10 @@ export async function POST(request: NextRequest) {
     // In demo mode: redirect to the test address, never touch the real contact
     const actualTo = demoMode && demoEmail ? demoEmail : to;
     const actualSubject = demoMode
-      ? `[APERÇU DÉMO] ${subject}`
+      ? `[DEMO PREVIEW] ${subject}`
       : subject;
     const demoHeader = demoMode
-      ? `────────────────────────────────\n⚠️ APERÇU DÉMO — cet email aurait été envoyé à :\n${originalRecipient || to}\n────────────────────────────────\n\n`
+      ? `────────────────────────────────\n⚠️ DEMO PREVIEW — this email would have been sent to:\n${originalRecipient || to}\n────────────────────────────────\n\n`
       : '';
     const actualBody = demoHeader + body;
 
