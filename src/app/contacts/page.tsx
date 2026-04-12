@@ -289,10 +289,10 @@ export default function ContactsPage() {
 
             <div className="flex gap-3">
               <button className="btn btn-primary flex-1" onClick={handleConfirmImport}>
-                Importer {importPreview.rows.length} contacts
+                Import {importPreview.rows.length} contacts
               </button>
               <button className="btn btn-secondary" onClick={() => setImportPreview(null)}>
-                Annuler
+                Cancel
               </button>
             </div>
           </div>
@@ -304,7 +304,7 @@ export default function ContactsPage() {
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Contacts</h1>
           <p className="text-sm text-slate-500 mt-1">
-            {contacts.length} contacts au total · {filteredContacts.length} affichés
+            {contacts.length} contacts total · {filteredContacts.length} shown
             {importDone > 0 && (
               <span className="ml-2 text-green-600 font-medium">✅ {importDone} importés</span>
             )}
