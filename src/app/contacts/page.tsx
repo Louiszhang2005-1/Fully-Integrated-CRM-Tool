@@ -112,7 +112,7 @@ export default function ContactsPage() {
 
   // ── Export CSV ──
   const handleExportCSV = () => {
-    const headers = ['Nom', 'Organisation', 'Titre', 'Courriel', 'LinkedIn', 'Canal', 'Statut', 'Audience', 'Relance', 'Date envoi'];
+    const headers = ['Name', 'Organization', 'Title', 'Email', 'LinkedIn', 'Channel', 'Status', 'Audience', 'Follow-up', 'Send Date'];
     const rows = filteredContacts.map((c) => [
       c.fullName,
       c.organization,
@@ -254,9 +254,9 @@ export default function ContactsPage() {
       {importPreview && (
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
           <div className="card-elevated p-6 max-w-md w-full">
-            <h2 className="text-lg font-bold text-slate-900 mb-1">Importer des contacts</h2>
+            <h2 className="text-lg font-bold text-slate-900 mb-1">Import contacts</h2>
             <p className="text-sm text-slate-500 mb-4">
-              <span className="font-medium text-slate-700">{importPreview.rows.length}</span> contacts détectés dans <em>{importPreview.filename}</em>
+              <span className="font-medium text-slate-700">{importPreview.rows.length}</span> contacts detected in <em>{importPreview.filename}</em>
             </p>
 
             {/* Sample preview */}
